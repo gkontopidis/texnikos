@@ -94,11 +94,6 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <h3 className="text-2xl font-bold">{job.title}</h3>
-              {job.verifiedEmployer && (
-                <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700">
-                  ✓ Πιστοποιημένος
-                </span>
-              )}
             </div>
             <div className="flex items-center gap-3 text-sm text-slate-500">
               <span>{job.company} · {job.location}</span>
@@ -118,12 +113,6 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
         <div className="space-y-6 px-6 py-6">
           {/* Trust Block */}
           <div className="grid gap-3 sm:grid-cols-3">
-            {job.verifiedEmployer && (
-              <div className="flex items-center gap-2 rounded-2xl bg-slate-50 p-3 text-xs font-semibold text-slate-700 border border-slate-100">
-                <span className="text-blue-600 text-lg">✓</span>
-                <span>Πιστοποιημένος εργοδότης</span>
-              </div>
-            )}
             {job.salaryVerified && (
               <div className="flex items-center gap-2 rounded-2xl bg-slate-50 p-3 text-xs font-semibold text-slate-700 border border-slate-100">
                 <span className="text-emerald-600 text-lg">✓</span>
@@ -147,6 +136,14 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
                 )}
               </div>
               <div className="font-medium text-slate-900 text-lg">{job.salary ?? "Κατόπιν συμφωνίας"}</div>
+            </div>
+            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+              <div className="text-sm text-slate-500 mb-2">Διάρκεια</div>
+              <div className="font-medium text-slate-900 text-lg">
+                {job.duration?.type === "permanent" 
+                  ? "Μόνιμη συνεργασία" 
+                  : `${job.duration?.amount} ${job.duration?.unit === 'days' ? 'ημέρες' : job.duration?.unit === 'months' ? 'μήνες' : 'έτη'}`}
+              </div>
             </div>
             <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
               <div className="text-sm text-slate-500 mb-2">Καθεστώς</div>
@@ -181,7 +178,7 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
 
               {job.contactPhone && (
                 <a
-                  href={`https://wa.me/30${job.contactPhone.replace(/[^0-9]/g, '')}`}
+                  href={`https://wa.me/${job.contactPhone.replace(/[^0-9]/g, '').startsWith('30') ? '' : '30'}${job.contactPhone.replace(/[^0-9]/g, '')}`}
                   onClick={() => trackContact("whatsapp")}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -210,11 +207,16 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
           {/* Collapsible Apply Form */}
           <div className="pt-4 border-t border-slate-100">
             {!showApplyForm ? (
-              <div className="text-center">
-                <p className="text-sm text-slate-500 mb-3">Δεν θέλεις να καλέσεις;</p>
+              <div className="flex justify-center gap-3">
+                <button
+                  onClick={onClose}
+                  className="rounded-2xl border-2 border-slate-200 px-8 py-3 font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                >
+                  Ακύρωση
+                </button>
                 <button
                   onClick={() => setShowApplyForm(true)}
-                  className="rounded-2xl border-2 border-slate-200 px-8 py-3 font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                  className="rounded-2xl bg-slate-900 px-8 py-3 font-bold text-white transition hover:bg-slate-800"
                 >
                   Στείλε αίτηση
                 </button>
@@ -266,6 +268,13 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
                     Ο εργοδότης θα λάβει τα στοιχεία σου άμεσα.
                   </div>
                   <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="rounded-3xl border border-slate-300 px-6 py-3 font-bold text-slate-700 transition hover:bg-slate-50"
+                    >
+                      Ακύρωση
+                    </button>
                     <button
                       type="submit"
                       className="w-full sm:w-auto rounded-3xl bg-slate-900 px-8 py-3 font-bold text-white transition hover:bg-slate-800"

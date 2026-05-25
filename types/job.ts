@@ -9,7 +9,6 @@ export type Job = {
   description?: string;
   contactEmail?: string;
   contactPhone?: string;
-  verifiedEmployer?: boolean;
   salaryVerified?: boolean;
   responseRate?: number;
   createdAt?: string;

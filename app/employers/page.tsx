@@ -1,10 +1,12 @@
+import Link from "next/link";
+
 export default function EmployersPackages() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
       <header className="bg-white border-b border-slate-200 py-6">
         <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
-          <a href="/" className="text-xl font-bold tracking-tight">TexnikesDouleies.gr</a>
-          <a href="/" className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition">← Επιστροφή στην Αρχική</a>
+          <Link href="/" className="text-xl font-bold tracking-tight">TexnikesDouleies.gr</Link>
+          <Link href="/" className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition">← Επιστροφή στην Αρχική</Link>
         </div>
       </header>
 
@@ -29,7 +31,7 @@ export default function EmployersPackages() {
               <li className="flex items-center gap-2 text-slate-300">❌ Προτεραιότητα στη λίστα</li>
               <li className="flex items-center gap-2 text-slate-300">❌ Email Alerts</li>
             </ul>
-            <a href="/" className="block w-full py-4 text-center rounded-2xl bg-slate-100 text-slate-900 font-bold hover:bg-slate-200 transition">Επιλογή</a>
+            <Link href="/" className="block w-full py-4 text-center rounded-2xl bg-slate-100 text-slate-900 font-bold hover:bg-slate-200 transition">Επιλογή</Link>
           </div>
 
           {/* Featured Plan */}
@@ -44,7 +46,7 @@ export default function EmployersPackages() {
               <li className="flex items-center gap-2">✅ Ειδική σήμανση ⭐</li>
               <li className="flex items-center gap-2 text-slate-300">❌ Email Alerts</li>
             </ul>
-            <a href="/" className="block w-full py-4 text-center rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition shadow-lg shadow-emerald-200">Επιλογή</a>
+            <Link href="/" className="block w-full py-4 text-center rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition shadow-lg shadow-emerald-200">Επιλογή</Link>
           </div>
 
           {/* Urgent Plan */}
@@ -58,7 +60,7 @@ export default function EmployersPackages() {
               <li className="flex items-center gap-2">✅ 🚨 Σήμανση ΕΠΕΙΓΟΝ</li>
               <li className="flex items-center gap-2">✅ Facebook Ad Boost</li>
             </ul>
-            <a href="/" className="block w-full py-4 text-center rounded-2xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition">Επιλογή</a>
+            <Link href="/" className="block w-full py-4 text-center rounded-2xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition">Επιλογή</Link>
           </div>
         </div>
 

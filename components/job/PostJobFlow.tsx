@@ -19,6 +19,7 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
     company: "",
     location: "",
     salary: "",
+    duration: { type: "permanent", amount: 0, unit: "months" }, 
     description: "",
     contactEmail: "",
     contactPhone: "",
@@ -144,6 +145,73 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
               </div>
             </div>
 
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-700">Τύπος Απασχόλησης *</label>
+                <select
+                  value={formData.fullTime ? "full" : "part"}
+                  onChange={(e) => setFormData({ ...formData, fullTime: e.target.value === "full" })}
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none focus:ring-2 focus:ring-slate-100 transition"
+                >
+                  <option value="full">Πλήρης Απασχόληση</option>
+                  <option value="part">Μερική Απασχόληση</option>
+                </select>
+              </div>
+              <div className="flex items-center pt-6">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={formData.urgent || false}
+                    onChange={(e) => setFormData({ ...formData, urgent: e.target.checked })}
+                    className="w-5 h-5 rounded border-slate-300 text-red-600 focus:ring-red-500"
+                  />
+                  <span className="text-sm font-bold text-red-700">🚨 Άμεση Πρόσληψη</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-slate-700">Διάρκεια Έργου *</label>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, duration: { type: "permanent", amount: 0, unit: "months" } })}
+                  className={`flex-1 rounded-2xl border-2 px-4 py-3 font-bold transition ${formData.duration.type === "permanent" ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white"}`}
+                >
+                  Μόνιμη
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, duration: { type: "fixed", amount: 1, unit: "months" } })}
+                  className={`flex-1 rounded-2xl border-2 px-4 py-3 font-bold transition ${formData.duration.type === "fixed" ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white"}`}
+                >
+                  Συγκεκριμένη
+                </button>
+              </div>
+
+              {formData.duration.type === "fixed" && (
+                <div className="flex gap-3 pt-2">
+                  <input
+                    type="number"
+                    min="1"
+                    max="12"
+                    value={formData.duration.amount}
+                    onChange={(e) => setFormData({ ...formData, duration: { ...formData.duration, amount: parseInt(e.target.value) } })}
+                    className="w-24 rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none focus:ring-2 focus:ring-slate-100"
+                  />
+                  <select
+                    value={formData.duration.unit}
+                    onChange={(e) => setFormData({ ...formData, duration: { ...formData.duration, unit: e.target.value } })}
+                    className="flex-1 rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none focus:ring-2 focus:ring-slate-100"
+                  >
+                    <option value="days">Ημέρες</option>
+                    <option value="months">Μήνες</option>
+                    <option value="years">Έτη</option>
+                  </select>
+                </div>
+              )}
+            </div>
+
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">Περιγραφή</label>
               <textarea
@@ -189,6 +257,7 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
               <div>
                 <div className="font-bold text-slate-900">Δωρεάν Αγγελία</div>
                 <div className="text-sm text-slate-500">Δημοσίευση μετά από 72 ώρες moderation.</div>
+                <div className="text-xs font-semibold text-slate-400 mt-1">Λήξη σε 30 ημέρες</div>
               </div>
               <div className="text-xl font-bold">€0</div>
             </button>
@@ -196,7 +265,8 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
             <button onClick={() => handlePlanSelect("featured")} className="w-full flex items-center justify-between rounded-[24px] border-2 border-emerald-100 bg-emerald-50/30 p-5 text-left transition hover:border-emerald-200 hover:bg-emerald-50/50">
               <div>
                 <div className="font-bold text-emerald-900">Προβεβλημένη Αγγελία ⭐</div>
-                <div className="text-sm text-emerald-700/70">Άμεση έγκριση & πρώτη θέση για 30 ημέρες.</div>
+                <div className="text-sm text-emerald-700/70">Άμεση έγκριση, πρώτη θέση & Boost.</div>
+                <div className="text-xs font-semibold text-emerald-700/50 mt-1">Ενεργή μέχρι να την κλείσετε</div>
               </div>
               <div className="text-xl font-bold">€49</div>
             </button>
@@ -204,7 +274,8 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
             <button onClick={() => handlePlanSelect("urgent")} className="w-full flex items-center justify-between rounded-[24px] border-2 border-amber-100 bg-amber-50/30 p-5 text-left transition hover:border-amber-200 hover:bg-amber-50/50">
               <div>
                 <div className="font-bold text-amber-900">Επείγουσα Αγγελία ⚡</div>
-                <div className="text-sm text-amber-700/70">Προτεραιότητα, Email Alerts & Homepage placement.</div>
+                <div className="text-sm text-amber-700/70">Πρώτη θέση, ειδική σήμανση & Boost.</div>
+                <div className="text-xs font-semibold text-amber-900/50 mt-1">Ενεργή μέχρι να την κλείσετε</div>
               </div>
               <div className="text-xl font-bold text-amber-900">€99</div>
             </button>

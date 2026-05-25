@@ -17,7 +17,9 @@ export default async function handler(
     await connectDB();
 
     const jobData = req.body;
-    const { plan, contactEmail, title } = jobData;
+    console.log("Creating job with data:", JSON.stringify(jobData, null, 2));
+
+    const { plan, contactEmail, title, duration, fullTime } = jobData;
     
     const now = new Date();
     const publishAt = plan === "free" 
@@ -31,7 +33,9 @@ export default async function handler(
 
     const newJob = new Job({
       ...jobData,
-      status: "pending",
+      duration,
+      fullTime,
+      status: plan === "free" ? "pending" : "active", // Immediate approval for paid
       publishAt,
       expiresAt,
       featuredUntil,

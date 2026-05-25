@@ -1,11 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { connectDB } from "@/lib/mongodb";
+import Application from "@/models/Application";
+import { sendApplicationNotificationEmail } from "@/lib/mail/emailService";
+import Job from "@/models/Job";
 
-type SuccessResponse = { message: string };
-type ErrorResponse = { error: string };
-
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<SuccessResponse | ErrorResponse>
+  res: NextApiResponse
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -16,7 +17,6 @@ export default function handler(
     jobId,
     jobTitle,
     employerEmail,
-    employerPhone,
     applicantName,
     applicantEmail,
     applicantPhone,
@@ -27,17 +27,27 @@ export default function handler(
     return res.status(400).json({ error: "Missing required application fields." });
   }
 
-  console.log("New job application received:", {
-    jobId,
-    jobTitle,
-    employerEmail,
-    employerPhone,
-    applicantName,
-    applicantEmail,
-    applicantPhone,
-    applicantMessage,
-  });
+  try {
+    await connectDB();
 
-  // TODO: Εδώ μπορείς να προσθέσεις πραγματική αποστολή email / notification στον εργοδότη.
-  return res.status(200).json({ message: "Application received and employer notified." });
+    // 1. Save to database
+    await Application.create({
+      jobId,
+      applicantName,
+      applicantEmail,
+      applicantPhone,
+      applicantMessage,
+    });
+
+    // 2. Increment job applicant count
+    await Job.findByIdAndUpdate(jobId, { $inc: { applicantCount: 1 } });
+
+    // 3. Send notification
+    await sendApplicationNotificationEmail(employerEmail, applicantName, applicantPhone, jobTitle);
+
+    return res.status(200).json({ message: "Application received and employer notified." });
+  } catch (error) {
+    console.error("Application error:", error);
+    return res.status(500).json({ error: "Internal server error." });
+  }
 }

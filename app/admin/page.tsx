@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AdminPage() {
@@ -14,7 +14,7 @@ export default function AdminPage() {
   // Toast system
   const [toasts, setToasts] = useState<{ id: number; message: string; type: "success" | "error" | "info"; visible: boolean }[]>([]);
 
-  const showToast = (message: string, type: "success" | "error" | "info" = "success") => {
+  const showToast = useCallback((message: string, type: "success" | "error" | "info" = "success") => {
     const id = Date.now();
     setToasts((current) => [...current, { id, message, type, visible: true }]);
     setTimeout(() => {
@@ -23,9 +23,9 @@ export default function AdminPage() {
     setTimeout(() => {
       setToasts((current) => current.filter((t) => t.id !== id));
     }, 3500);
-  };
+  }, []);
 
-  const fetchJobs = () => {
+  const fetchJobs = useCallback(() => {
     fetch(`/api/admin/jobs/list?status=${filterStatus}&search=${search}`)
       .then((res) => res.json())
       .then((data) => {
@@ -35,11 +35,11 @@ export default function AdminPage() {
           setJobs([]);
         }
       });
-  };
+  }, [filterStatus, search]);
 
   useEffect(() => {
     fetchJobs();
-  }, [filterStatus]);
+  }, [fetchJobs]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +48,7 @@ export default function AdminPage() {
 
   const handleModerate = async (jobId: string, action: "approve" | "reject") => {
     try {
-      const res = await fetch("/api/admin/jobs/moderate", {
+      const res = await fetch("/api/admin/moderate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jobId, action }),
@@ -169,6 +169,77 @@ export default function AdminPage() {
                   onChange={(e) => setEditingJob({...editingJob, location: e.target.value})} 
                 />
               </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Τύπος Απασχόλησης</label>
+                <select 
+                  className="w-full px-4 py-2.5 border rounded-xl bg-slate-50 focus:bg-white transition font-bold"
+                  value={editingJob.fullTime ? "full" : "part"} 
+                  onChange={(e) => setEditingJob({...editingJob, fullTime: e.target.value === "full"})}
+                >
+                  <option value="full">Πλήρης</option>
+                  <option value="part">Μερική</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold mb-2">Τύπος Διάρκειας</label>
+                <select 
+                  className="w-full px-4 py-2.5 border rounded-xl bg-slate-50 focus:bg-white transition font-bold"
+                  value={editingJob.duration?.type || "permanent"} 
+                  onChange={(e) => setEditingJob({
+                    ...editingJob, 
+                    duration: { ...editingJob.duration, type: e.target.value }
+                  })}
+                >
+                  <option value="permanent">Μόνιμη</option>
+                  <option value="fixed">Συγκεκριμένη</option>
+                </select>
+              </div>
+
+              {editingJob.duration?.type === "fixed" && (
+                <>
+                  <div>
+                    <label className="block text-sm font-bold mb-2">Διάρκεια (Αριθμός)</label>
+                    <input 
+                      type="number"
+                      className="w-full px-4 py-2.5 border rounded-xl bg-slate-50 focus:bg-white transition"
+                      value={editingJob.duration?.amount || 1} 
+                      onChange={(e) => setEditingJob({
+                        ...editingJob, 
+                        duration: { ...editingJob.duration, amount: parseInt(e.target.value) || 0 }
+                      })} 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold mb-2">Μονάδα Χρόνου</label>
+                    <select 
+                      className="w-full px-4 py-2.5 border rounded-xl bg-slate-50 focus:bg-white transition"
+                      value={editingJob.duration?.unit || "months"} 
+                      onChange={(e) => setEditingJob({
+                        ...editingJob, 
+                        duration: { ...editingJob.duration, unit: e.target.value }
+                      })}
+                    >
+                      <option value="days">Ημέρες</option>
+                      <option value="months">Μήνες</option>
+                      <option value="years">Έτη</option>
+                    </select>
+                  </div>
+                </>
+              )}
+              <div className="flex items-center gap-3 bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
+                <input 
+                  type="checkbox" 
+                  id="urgent-toggle"
+                  checked={editingJob.urgent || false} 
+                  onChange={(e) => setEditingJob({...editingJob, urgent: e.target.checked})}
+                  className="w-5 h-5 accent-indigo-600 cursor-pointer"
+                />
+                <label htmlFor="urgent-toggle" className="text-sm font-bold text-indigo-900 cursor-pointer select-none">
+                  🚨 Άμεση Πρόσληψη
+                </label>
+              </div>
+
               <div>
                 <label className="block text-sm font-bold mb-2">Status</label>
                 <select 

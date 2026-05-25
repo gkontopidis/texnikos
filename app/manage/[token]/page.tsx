@@ -145,15 +145,54 @@ export default function ManageJobPage({ params }: { params: Promise<{ token: str
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">Μισθός (π.χ. 1200€ - 1500€)</label>
-                <input 
-                  type="text" 
-                  value={editData.salary} 
-                  onChange={(e) => setEditData({...editData, salary: e.target.value})}
-                  placeholder="Κατόπιν συμφωνίας"
-                  className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-slate-900 bg-white"
-                />
+                <label className="block text-sm font-bold text-slate-700 mb-1.5">Τύπος Απασχόλησης</label>
+                <select 
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 bg-white"
+                  value={editData.fullTime ? "full" : "part"} 
+                  onChange={(e) => setEditData({...editData, fullTime: e.target.value === "full"})}
+                >
+                  <option value="full">Πλήρης Απασχόληση</option>
+                  <option value="part">Μερική Απασχόληση</option>
+                </select>
               </div>
+
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-1.5">Τύπος Διάρκειας</label>
+                <select 
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 bg-white"
+                  value={editData.duration?.type || "permanent"} 
+                  onChange={(e) => setEditData({...editData, duration: { ...editData.duration, type: e.target.value }})}
+                >
+                  <option value="permanent">Μόνιμη</option>
+                  <option value="fixed">Συγκεκριμένη</option>
+                </select>
+              </div>
+
+              {editData.duration?.type === "fixed" && (
+                <>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5">Διάρκεια (Αριθμός)</label>
+                    <input 
+                      type="number"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 bg-white"
+                      value={editData.duration?.amount || 1} 
+                      onChange={(e) => setEditData({...editData, duration: { ...editData.duration, amount: parseInt(e.target.value) || 0 }})} 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5">Μονάδα Χρόνου</label>
+                    <select 
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 bg-white"
+                      value={editData.duration?.unit || "months"} 
+                      onChange={(e) => setEditData({...editData, duration: { ...editData.duration, unit: e.target.value }})}
+                    >
+                      <option value="days">Ημέρες</option>
+                      <option value="months">Μήνες</option>
+                      <option value="years">Έτη</option>
+                    </select>
+                  </div>
+                </>
+              )}
               <div className="flex items-center gap-3 bg-red-50 p-4 rounded-2xl border border-red-100">
                 <input 
                   type="checkbox" 

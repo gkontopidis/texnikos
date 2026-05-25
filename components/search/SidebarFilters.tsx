@@ -80,10 +80,20 @@ export default function SidebarFilters({ filters, setFilters }: SidebarFiltersPr
           />
           <span className="text-sm font-semibold text-slate-700 group-hover:text-indigo-600">Μερική απασχόληση</span>
         </label>
+
+        <label className="flex items-center gap-3 cursor-pointer group">
+          <input 
+            type="checkbox" 
+            checked={filters.fixedDurationOnly}
+            onChange={(e) => setFilters({...filters, fixedDurationOnly: e.target.checked})}
+            className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+          />
+          <span className="text-sm font-semibold text-slate-700 group-hover:text-indigo-600">Συγκεκριμένης διάρκειας</span>
+        </label>
       </div>
 
       <button 
-        onClick={() => setFilters({ keyword: "", location: "", info: "", hasSalary: false, urgentOnly: false, fullTimeOnly: false, partTimeOnly: false })}
+        onClick={() => setFilters({ keyword: "", location: "", info: "", hasSalary: false, urgentOnly: false, fullTimeOnly: false, partTimeOnly: false, fixedDurationOnly: false })}
         className="w-full text-sm font-bold text-slate-400 hover:text-indigo-600 transition border-t border-slate-100 pt-4"
       >
         Καθαρισμός όλων

@@ -37,6 +37,7 @@ export default async function handler(
     // Logic: 
     // 1. Show all 'active' jobs (immediate)
     // 2. Show 'scheduled' jobs only if now >= publishAt
+    // Priority: Urgent (⚡) > Featured (⭐) > Free (standard)
     const jobs = await Job.find({
       $or: [
         { status: "active" },
@@ -45,7 +46,7 @@ export default async function handler(
           publishAt: { $lte: now } 
         }
       ]
-    }).sort({ createdAt: -1 });
+    }).sort({ urgent: -1, featured: -1, createdAt: -1 });
 
     return res.status(200).json(jobs);
   } catch (error) {

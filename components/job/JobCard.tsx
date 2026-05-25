@@ -10,20 +10,6 @@ interface JobCardProps {
 }
 
 export default function JobCard({ job, isSaved, onSave, onViewDetails }: JobCardProps) {
-  const getResponseRateColor = (rate?: number) => {
-    if (rate === undefined) return "text-slate-400";
-    if (rate >= 90) return "text-emerald-600";
-    if (rate >= 60) return "text-amber-600";
-    return "text-slate-500";
-  };
-
-  const getResponseRateLabel = (rate?: number) => {
-    if (rate === undefined || rate === 0) return "Ενεργός εργοδότης";
-    if (rate >= 90) return "Απαντά πολύ γρήγορα";
-    if (rate >= 60) return "Απαντά γρήγορα";
-    return "Ενεργός εργοδότης";
-  };
-
   return (
     <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -34,11 +20,6 @@ export default function JobCard({ job, isSaved, onSave, onViewDetails }: JobCard
               {job.urgent && (
                 <span className="rounded-full bg-amber-500 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-900">
                   Άμεση πρόσληψη
-                </span>
-              )}
-              {job.verifiedEmployer && (
-                <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-blue-700">
-                  ✓ Πιστοποιημένος Εργοδότης
                 </span>
               )}
             </div>
@@ -54,6 +35,12 @@ export default function JobCard({ job, isSaved, onSave, onViewDetails }: JobCard
 
           <p className="text-slate-600 max-w-2xl line-clamp-2">
             {job.description || "Ζητείται έμπειρος τεχνικός για μόνιμη εργασία με πλήρη ασφάλιση και ανταγωνιστικές αποδοχές."}
+            <button 
+              onClick={() => onViewDetails(job)}
+              className="ml-2 text-indigo-600 font-bold hover:underline"
+            >
+              Περισσότερα...
+            </button>
           </p>
         </div>
 

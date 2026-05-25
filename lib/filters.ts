@@ -17,6 +17,7 @@ export function filterJobs(
     urgentOnly: boolean;
     fullTimeOnly: boolean;
     partTimeOnly: boolean;
+    fixedDurationOnly: boolean;
   }
 ) {
   const normalizedKeyword = normalizeGreek(filters.keyword);
@@ -48,7 +49,13 @@ export function filterJobs(
     const matchesUrgent = !filters.urgentOnly || !!job.urgent;
     const matchesFullTime = !filters.fullTimeOnly || job.fullTime === true;
     const matchesPartTime = !filters.partTimeOnly || job.fullTime === false;
+    
+    // Logic: If "Fixed Duration" is checked, we want jobs where duration is defined 
+    // AND it's not "Permanent" / "Μόνιμη"
+    const normalizedDuration = normalizeGreek(job.duration || "");
+    const isPermanent = normalizedDuration.includes("μονιμη") || normalizedDuration.includes("αοριστου");
+    const matchesFixedDuration = !filters.fixedDurationOnly || (!!job.duration && !isPermanent);
 
-    return matchesKeyword && matchesLocation && matchesInfo && matchesSalary && matchesUrgent && matchesFullTime && matchesPartTime;
+    return matchesKeyword && matchesLocation && matchesInfo && matchesSalary && matchesUrgent && matchesFullTime && matchesPartTime && matchesFixedDuration;
   });
 }

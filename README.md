@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TexnikesDouleies.gr
 
-## Getting Started
+Η νούμερο 1 πλατφόρμα για τεχνικά επαγγέλματα στην Ελλάδα. Σύνδεση εργοδοτών και τεχνιτών με αξιοπιστία και ταχύτητα.
 
-First, run the development server:
+## Τεχνολογίες
+- **Framework:** Next.js (App Router)
+- **Database:** MongoDB
+- **Styling:** Tailwind CSS (Vanilla CSS & Tailwind-like utilities)
+- **Emails:** Resend
+- **Language:** TypeScript
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Εγκατάσταση
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Clone το repository:
+   ```bash
+   git clone <repository-url>
+   cd TexnikesDouleies
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. Εγκατάσταση dependencies:
+   ```bash
+   npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Ρύθμιση `.env` (δημιουργήστε το αρχείο στη ρίζα):
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   RESEND_API_KEY=your_resend_api_key
+   ```
 
-## Learn More
+4. Εκκίνηση development server:
+   ```bash
+   npm run dev
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+## API Endpoints (Κεντρικά)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `POST /api/jobs/create`: Δημιουργία νέας αγγελίας.
+- `POST /api/apply`: Υποβολή αίτησης υποψηφίου.
+- `POST /api/admin/moderate`: Διαχείριση/moderation αγγελιών.
+- `PUT /api/admin/jobs/update`: Ενημέρωση στοιχείων αγγελίας (Admin).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Αρχιτεκτονική
+- `/app`: Σελίδες Next.js (Pages & Admin panels).
+- `/components`: UI Components (Modals, Job cards, Filters).
+- `/lib`: Βιβλιοθήκες (DB connection, Email services, Filters).
+- `/models`: Mongoose Schemas (Job, Application, AlertSubscription).
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+Το project έχει ρυθμιστεί για εύκολο deployment στο Vercel:
+1. Συνδέστε το repo στο Vercel.
+2. Προσθέστε τα Environment Variables στο Vercel Dashboard.
+3. Το deployment θα γίνεται αυτόματα με κάθε push στο main branch.

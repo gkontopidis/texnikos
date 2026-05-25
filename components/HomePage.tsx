@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { filterJobs } from "@/lib/filters";
 import { Job } from "@/types/job";
 import JobCard from "./job/JobCard";
@@ -28,10 +29,11 @@ export default function HomePage() {
   const [savedJobs, setSavedJobs] = useState<string[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [showPostJobModal, setShowPostJobModal] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const [filters, setFilters] = useState({
     keyword: "", location: "", info: "", 
-    hasSalary: false, urgentOnly: false, fullTimeOnly: false, partTimeOnly: false
+    hasSalary: false, urgentOnly: false, fullTimeOnly: false, partTimeOnly: false, fixedDurationOnly: false
   });
 
   const [toasts, setToasts] = useState<{ id: number; message: string; type: "success" | "error" | "info"; visible: boolean }[]>([]);
@@ -44,9 +46,18 @@ export default function HomePage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("savedJobs");
-    if (saved) try { setSavedJobs(JSON.parse(saved)); } catch (e) { console.error(e); }
+    if (saved) {
+      try { 
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setSavedJobs(parsed);
+        }
+      } catch (e) { 
+        console.error("Error parsing saved jobs:", e); 
+      }
+    }
     fetchJobs();
-  }, []);
+  }, []); // Only runs on mount
 
   const showToast = (message: string, type: "success" | "error" | "info" = "success") => {
     const id = Date.now();
@@ -75,8 +86,26 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1 className="text-xl font-bold tracking-tight">TexnikesDouleies.gr</h1>
-          <button onClick={() => setShowPostJobModal(true)} className="rounded-2xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white">Δημοσίευση Αγγελίας</button>
+          
+          <nav className="hidden md:flex gap-6 text-sm font-semibold text-slate-600">
+            <Link href="/employers" className="hover:text-indigo-600">Για Εργοδότες</Link>
+            <Link href="/terms" className="hover:text-indigo-600">Όροι</Link>
+            <Link href="/gdpr" className="hover:text-indigo-600">GDPR</Link>
+          </nav>
+          
+          <div className="flex items-center gap-4">
+            <button onClick={() => setShowPostJobModal(true)} className="rounded-2xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white">Δημοσίευση</button>
+            <button className="md:hidden text-2xl" onClick={() => setIsMenuOpen(!isMenuOpen)}>☰</button>
+          </div>
         </div>
+        
+        {isMenuOpen && (
+          <nav className="md:hidden bg-white border-t border-slate-100 px-6 py-4 flex flex-col gap-4 text-sm font-semibold text-slate-600">
+            <Link href="/employers" onClick={() => setIsMenuOpen(false)}>Για Εργοδότες</Link>
+            <Link href="/terms" onClick={() => setIsMenuOpen(false)}>Όροι</Link>
+            <Link href="/gdpr" onClick={() => setIsMenuOpen(false)}>GDPR</Link>
+          </nav>
+        )}
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-12">
@@ -104,12 +133,11 @@ export default function HomePage() {
         <div className="grid lg:grid-cols-[300px,1fr] gap-8">
           <aside className="space-y-6">
             <SidebarFilters filters={filters} setFilters={setFilters} />
-            <AlertBox specialtyOptions={specialtyOptions} locationOptions={locationOptions} showToast={showToast} />
           </aside>
           
           <div className="space-y-4">
-            <div className="bg-white rounded-[32px] border border-slate-200 p-6 flex justify-between items-center shadow-sm">
-                <span className="font-bold text-slate-700">{filteredJobs.length} αποτελέσματα</span>
+            <div className="flex justify-end">
+              <p className="font-medium text-slate-600">{filteredJobs.length} αποτελέσματα</p>
             </div>
             {filteredJobs.length > 0 ? (
               filteredJobs.map((job) => (
@@ -131,7 +159,7 @@ export default function HomePage() {
               <div className="text-center py-20 bg-white rounded-[32px] border border-slate-200 shadow-sm">
                 <div className="text-6xl mb-4">🔍</div>
                 <h4 className="text-xl font-bold text-slate-900 mb-2">Δεν βρέθηκαν αγγελίες</h4>
-                <button onClick={() => setFilters({ keyword: "", location: "", info: "", hasSalary: false, urgentOnly: false, fullTimeOnly: false, partTimeOnly: false })} className="bg-indigo-600 text-white px-8 py-3 rounded-2xl font-bold">Καθαρισμός φίλτρων</button>
+                <button onClick={() => setFilters({ keyword: "", location: "", info: "", hasSalary: false, urgentOnly: false, fullTimeOnly: false, partTimeOnly: false, fixedDurationOnly: false })} className="bg-indigo-600 text-white px-8 py-3 rounded-2xl font-bold">Καθαρισμός φίλτρων</button>
               </div>
             )}
           </div>
@@ -144,8 +172,6 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
           <div>© 2026 TexnikesDouleies.gr</div>
           <div className="flex gap-6">
-            <a href="/terms" className="hover:text-indigo-600 transition">Όροι Χρήσης</a>
-            <a href="/gdpr" className="hover:text-indigo-600 transition">GDPR</a>
             <a href="mailto:support@texnikesdouleies.gr" className="hover:text-indigo-600 transition">Επικοινωνία</a>
           </div>
         </div>

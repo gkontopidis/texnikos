@@ -2,8 +2,29 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+export const sendApplicationNotificationEmail = async (employerEmail: string, applicantName: string, applicantPhone: string, jobTitle: string) => {
+  try {
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: employerEmail,
+      subject: `Νέα αίτηση για την αγγελία: ${jobTitle}`,
+      html: `
+        <h1>Νέα αίτηση εργασίας!</h1>
+        <p>Λάβατε μια νέα αίτηση για την αγγελία σας: <strong>${jobTitle}</strong></p>
+        <p><strong>Υποψήφιος:</strong> ${applicantName}</p>
+        <p><strong>Τηλέφωνο:</strong> ${applicantPhone}</p>
+        <p>Παρακαλώ επικοινωνήστε απευθείας με τον υποψήφιο.</p>
+      `,
+    });
+  } catch (error) {
+    console.error("Resend Error (sendApplicationNotificationEmail):", error);
+  }
+};
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
 export const sendJobPostedEmail = async (email: string, manageToken: string, jobTitle: string) => {
-  const manageUrl = `http://localhost:3000/manage/${manageToken}`;
+  const manageUrl = `${BASE_URL}/manage/${manageToken}`;
   
   try {
     await resend.emails.send({
@@ -25,7 +46,7 @@ export const sendJobPostedEmail = async (email: string, manageToken: string, job
 };
 
 export const sendExpirationReminderEmail = async (email: string, manageToken: string, jobTitle: string) => {
-  const manageUrl = `http://localhost:3000/manage/${manageToken}`;
+  const manageUrl = `${BASE_URL}/manage/${manageToken}`;
   
   try {
     await resend.emails.send({
