@@ -7,7 +7,7 @@ const ALLOWED_FIELDS = [
   "salaryText", "description", "category", "urgent", "fullTime", 
   "featured", "contactPhone", "contactEmail", "status", "plan", 
   "isPaid", "moderationNotes", "featuredUntil", "expiresAt", 
-  "salaryVerified", "responseRate"
+  "responseRate"
 ];
 
 export default async function handler(

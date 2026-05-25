@@ -5,6 +5,7 @@ const AlertSubscriptionSchema = new mongoose.Schema({
   specialty: { type: String, required: true },
   location: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
+  unsubscribed: { type: Boolean, default: false },
 });
 
 AlertSubscriptionSchema.index({ email: 1, specialty: 1, location: 1 }, { unique: true });

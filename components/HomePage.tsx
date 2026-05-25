@@ -83,19 +83,20 @@ function HomeContent() {
 
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold tracking-tight">TexnikesDouleies.gr</h1>
-          <nav className="hidden md:flex gap-6 text-sm font-semibold text-slate-600">
-            <Link href="/employers" className="hover:text-indigo-600">Για Εργοδότες</Link>
-            <Link href="/terms" className="hover:text-indigo-600">Όροι</Link>
-            <Link href="/gdpr" className="hover:text-indigo-600">GDPR</Link>
-          </nav>
-          <button onClick={() => setShowPostJobModal(true)} className="rounded-2xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white">Δημοσίευση</button>
+          <Link href="/" className="text-xl font-bold tracking-tight">TexnikesDouleies.gr</Link>
+          
+          <div className="flex items-center gap-4">
+            <Link href="/employers" className="hidden md:block text-sm font-semibold text-slate-600 hover:text-indigo-600">Για Εργοδότες</Link>
+            <button onClick={() => setShowPostJobModal(true)} className="rounded-2xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white">Δημοσίευση</button>
+            <button className="md:hidden text-2xl" onClick={() => setIsMenuOpen(!isMenuOpen)}>☰</button>
+          </div>
         </div>
+        
         {isMenuOpen && (
           <nav className="md:hidden bg-white border-t border-slate-100 px-6 py-4 flex flex-col gap-4 text-sm font-semibold text-slate-600">
             <Link href="/employers" onClick={() => setIsMenuOpen(false)}>Για Εργοδότες</Link>
-            <Link href="/terms" onClick={() => setIsMenuOpen(false)}>Όροι</Link>
-            <Link href="/gdpr" onClick={() => setIsMenuOpen(false)}>GDPR</Link>
+            <Link href="/terms" onClick={() => setIsMenuOpen(false)}>Όροι Χρήσης</Link>
+            <Link href="/gdpr" onClick={() => setIsMenuOpen(false)}>Πολιτική Απορρήτου</Link>
           </nav>
         )}
       </header>
@@ -149,6 +150,17 @@ function HomeContent() {
 
       {selectedJob && <JobModal job={selectedJob} onClose={() => setSelectedJob(null)} showToast={showToast} />}
       {showPostJobModal && <PostJobFlow onClose={() => setShowPostJobModal(false)} onJobCreated={fetchJobs} showToast={showToast} specialtyOptions={specialtyOptions} locationOptions={locationOptions} initialPlan={plan} />}
+      <footer className="border-t bg-white py-8">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+          <div>© 2026 TexnikesDouleies.gr</div>
+          <div className="flex flex-wrap gap-6 justify-center">
+            <Link href="/terms" className="hover:text-indigo-600 transition">Όροι Χρήσης</Link>
+            <Link href="/gdpr" className="hover:text-indigo-600 transition">Πολιτική Απορρήτου</Link>
+            <Link href="/cookies" className="hover:text-indigo-600 transition">Πολιτική Cookies</Link>
+            <a href="mailto:support@texnikesdouleies.gr" className="hover:text-indigo-600 transition">Επικοινωνία</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

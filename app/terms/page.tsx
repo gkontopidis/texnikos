@@ -4,46 +4,58 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
       <header className="bg-white border-b border-slate-200 py-6">
-        <div className="max-w-4xl mx-auto px-6">
+        <div className="max-w-4xl mx-auto px-6 flex justify-between items-center">
+          <Link href="/" className="font-bold tracking-tight">TexnikesDouleies.gr</Link>
           <Link href="/" className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition">← Επιστροφή στην Αρχική</Link>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-16">
-        <div className="bg-white rounded-[40px] border border-slate-200 p-8 md:p-12 shadow-sm">
-          <h1 className="text-4xl font-black tracking-tight mb-8 text-slate-900">Όροι Χρήσης</h1>
-          
-          <div className="space-y-8 text-slate-600 leading-relaxed">
+        <div className="bg-white rounded-[32px] border border-slate-200 p-8 shadow-sm">
+          <h1 className="text-3xl font-black mb-6">Όροι Χρήσης</h1>
+          <div className="space-y-6 text-slate-600 leading-relaxed">
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">1. Αποδοχή Όρων & Explicit Consent</h2>
-              <p>Με τη χρήση της πλατφόρμας, αποδέχεστε τους όρους. Επιπλέον, για την υποβολή αιτήσεων ή τη δημιουργία alerts, παρέχετε τη ρητή σας συγκατάθεση για την προώθηση των δεδομένων σας στον ενδιαφερόμενο εργοδότη.</p>
+              <h2 className="text-xl font-bold text-slate-900">1. Τι είναι το TexnikesDouleies.gr</h2>
+              <p>Η πλατφόρμα λειτουργεί ως online marketplace δημοσίευσης αγγελιών εργασίας. Στόχος μας είναι η διασύνδεση εργοδοτών και επαγγελματιών. Δεν είμαστε εταιρεία στελέχωσης (recruiter agency) ούτε συμβαλλόμενο μέρος στις συμφωνίες σας.</p>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">2. Moderation & Αναφορές Κατάχρησης</h2>
-              <p>Η πλατφόρμα διατηρεί το δικαίωμα ελέγχου και αφαίρεσης αγγελιών που κρίνονται παράνομες ή παραπλανητικές.</p>
-              <ul className="list-disc pl-6 space-y-2 mt-2">
-                <li><strong>Αναφορά:</strong> Εντοπίσατε προβληματική αγγελία; Στείλτε μας στο abuse@texnikesdouleies.gr.</li>
-                <li><strong>Moderation:</strong> Κάθε καταγγελία ερευνάται εντός 48 ωρών.</li>
+              <h2 className="text-xl font-bold text-slate-900">2. Αποποίηση Ευθύνης</h2>
+              <p>Το TexnikesDouleies.gr δεν εγγυάται:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Την πρόσληψη ή την επιτυχία εύρεσης εργασίας.</li>
+                <li>Την ποιότητα ή την αξιοπιστία των εργοδοτών ή των εργαζομένων.</li>
+                <li>Την εγκυρότητα των πληροφοριών που δημοσιεύονται από τρίτους.</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">3. Υποχρεώσεις Χρηστών</h2>
-              <p>Οι χρήστες δεσμεύονται για την παροχή αληθών στοιχείων. Η υποποίηση ταυτότητας τρίτων απαγορεύεται αυστηρά και επιφέρει αποκλεισμό.</p>
+              <h2 className="text-xl font-bold text-slate-900">3. Ευθύνη Χρηστών</h2>
+              <p>Κάθε χρήστης που δημοσιεύει αγγελία είναι αποκλειστικά υπεύθυνος για:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Την ακρίβεια των πληροφοριών.</li>
+                <li>Τη νομιμότητα του περιεχομένου της αγγελίας.</li>
+                <li>Τη συμμόρφωση με την ισχύουσα εργατική νομοθεσία.</li>
+              </ul>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-4">4. Περιορισμός Ευθύνης</h2>
-              <p>Το TexnikesDouleies.gr λειτουργεί ως δίαυλος επικοινωνίας. Δεν φέρουμε ευθύνη για τη σύναψη ή την έκβαση των εργασιακών σχέσεων μεταξύ των χρηστών.</p>
+              <h2 className="text-xl font-bold text-slate-900">4. Πολιτική Moderation & Απαγορευμένο Περιεχόμενο</h2>
+              <p>Διατηρούμε το δικαίωμα αφαίρεσης οποιασδήποτε αγγελίας χωρίς προειδοποίηση, εάν:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Κρίνεται παραπλανητική, abusive ή scam.</li>
+                <li>Προωθεί παράνομη ή "μαύρη" εργασία.</li>
+                <li>Περιέχει διακριτικές διατυπώσεις.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-bold text-slate-900">5. Περιορισμός Ευθύνης (Limitation of Liability)</h2>
+              <p>Το TexnikesDouleies.gr δεν φέρει καμία ευθύνη για διαφορές, οικονομικές συναλλαγές, συμφωνίες ή εργασιακές σχέσεις που προκύπτουν μεταξύ των χρηστών. Κάθε συμφωνία αποτελεί αποκλειστική ευθύνη των μερών.</p>
             </section>
           </div>
         </div>
       </main>
-
-      <footer className="py-12 text-center text-slate-400 text-sm">
-        © 2026 TexnikesDouleies.gr · Όροι Χρήσης
-      </footer>
     </div>
   );
 }

@@ -56,14 +56,26 @@ export default async function handler(
         break;
       case "update":
         if (data) {
-          job.title = data.title || job.title;
-          job.company = data.company || job.company;
-          job.location = data.location || job.location;
-          job.description = data.description || job.description;
-          job.salary = data.salary || job.salary;
-          job.contactPhone = data.contactPhone || job.contactPhone;
-          job.category = data.category || job.category;
-          job.urgent = typeof data.urgent === "boolean" ? data.urgent : job.urgent;
+          const allowedUpdates = [
+            "title", "company", "location", "description", 
+            "salary", "contactPhone", "category", "urgent",
+            "duration", "fullTime"
+          ];
+          
+          for (const key of allowedUpdates) {
+            if (key in data) {
+              // Update duration properly if it's the new structured object
+              if (key === "duration") {
+                job.duration = {
+                  type: data.duration.type || job.duration?.type,
+                  amount: data.duration.amount || job.duration?.amount,
+                  unit: data.duration.unit || job.duration?.unit
+                };
+              } else {
+                job[key] = data[key];
+              }
+            }
+          }
         }
         break;
       default:

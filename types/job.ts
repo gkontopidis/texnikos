@@ -9,7 +9,6 @@ export type Job = {
   description?: string;
   contactEmail?: string;
   contactPhone?: string;
-  salaryVerified?: boolean;
   responseRate?: number;
   createdAt?: string;
   status?: "pending" | "active" | "rejected" | "scheduled" | "expired";

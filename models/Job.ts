@@ -23,11 +23,17 @@ const JobSchema = new mongoose.Schema({
   contactEmail: String,
   status: { 
     type: String, 
-    enum: ["pending", "active", "closed", "expired", "rejected", "scheduled"],
-    default: "pending" 
+    enum: ["pending", "active", "closed", "expired", "rejected", "scheduled", "pending-verification"],
+    default: "pending-verification" 
+  },
+  audit: {
+    creatorIP: String,
+    userAgent: String,
+    createdAt: { type: Date, default: Date.now },
   },
   plan: { type: String, enum: ["free", "featured", "urgent"], default: "free" },
   isPaid: { type: Boolean, default: false },
+  emailVerified: { type: Boolean, default: false },
   moderationNotes: String,
   publishAt: { type: Date, default: Date.now },
   featuredUntil: Date,
@@ -40,11 +46,9 @@ const JobSchema = new mongoose.Schema({
   },
   applicantCount: { type: Number, default: 0 },
   expirationNotified: { type: Boolean, default: false },
-  salaryVerified: { type: Boolean, default: false },
   responseRate: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
-});
-
+  });
 JobSchema.index({ status: 1 });
 JobSchema.index({ location: 1 });
 JobSchema.index({ title: "text", description: "text" });

@@ -20,7 +20,7 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
     title: "", company: "", location: "", salary: "",
     duration: { type: "permanent", amount: 0, unit: "months" }, 
     description: "", contactEmail: "", contactPhone: "",
-    fullTime: true, urgent: false,
+    fullTime: true, urgent: false, honeypot: ""
   });
 
   const handlePlanSelect = (plan: "free" | "featured" | "urgent") => {
@@ -174,8 +174,16 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
 
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">Περιγραφή</label>
-              <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Περιγράψτε την θέση..." className="w-full min-h-[100px] rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none resize-none focus:ring-2 focus:ring-slate-100 transition" />
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Περιγράψτε την θέση..."
+                className="w-full min-h-[100px] rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none resize-none focus:ring-2 focus:ring-slate-100 transition"
+              />
             </div>
+
+            {/* Honeypot field for anti-spam */}
+            <input type="text" name="website_url" className="hidden" tabIndex={-1} autoComplete="off" onChange={(e) => setFormData({...formData, honeypot: e.target.value})} />
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
@@ -191,6 +199,9 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
             <button type="submit" className="w-full rounded-2xl bg-slate-900 py-4 font-bold text-white hover:bg-slate-800 transition">
               {selectedPlan === "free" ? "Δημοσίευση" : "Συνέχεια στην πληρωμή"}
             </button>
+            <p className="text-center text-xs text-slate-400">
+              Σημείωση: Επιτρέπεται μία δημοσίευση ανά 15 λεπτά.
+            </p>
           </form>
         )}
 

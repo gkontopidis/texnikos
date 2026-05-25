@@ -131,9 +131,6 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
             <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
               <div className="text-sm text-slate-500 mb-2 flex items-center justify-between">
                 <span>Μισθός</span>
-                {job.salaryVerified && (
-                  <span className="text-[10px] font-bold text-emerald-600 uppercase">Επιβεβαιωμένος</span>
-                )}
               </div>
               <div className="font-medium text-slate-900 text-lg">{job.salary ?? "Κατόπιν συμφωνίας"}</div>
             </div>
@@ -207,18 +204,36 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
           {/* Collapsible Apply Form */}
           <div className="pt-4 border-t border-slate-100">
             {!showApplyForm ? (
-              <div className="flex justify-center gap-3">
+              <div className="flex flex-col gap-4">
+                <div className="flex justify-center gap-3">
+                  <button
+                    onClick={onClose}
+                    className="rounded-2xl border-2 border-slate-200 px-8 py-3 font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                  >
+                    Ακύρωση
+                  </button>
+                  <button
+                    onClick={() => setShowApplyForm(true)}
+                    className="rounded-2xl bg-slate-900 px-8 py-3 font-bold text-white transition hover:bg-slate-800"
+                  >
+                    Στείλε αίτηση
+                  </button>
+                </div>
+                
                 <button
-                  onClick={onClose}
-                  className="rounded-2xl border-2 border-slate-200 px-8 py-3 font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                    onClick={() => {
+                        const reason = prompt("Γιατί αναφέρετε αυτή την αγγελία;");
+                        if (reason) {
+                            fetch("/api/jobs/report", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ jobId: job._id, reason })
+                            }).then(() => showToast("Ευχαριστούμε, η αναφορά σας εστάλη.", "info"));
+                        }
+                    }}
+                    className="text-xs text-rose-500 hover:underline text-center"
                 >
-                  Ακύρωση
-                </button>
-                <button
-                  onClick={() => setShowApplyForm(true)}
-                  className="rounded-2xl bg-slate-900 px-8 py-3 font-bold text-white transition hover:bg-slate-800"
-                >
-                  Στείλε αίτηση
+                    Αναφορά ακατάλληλου περιεχομένου
                 </button>
               </div>
             ) : (
@@ -263,24 +278,37 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
                   className="w-full min-h-[120px] rounded-3xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none resize-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                 />
 
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-2">
-                  <div className="text-xs text-slate-500">
-                    Ο εργοδότης θα λάβει τα στοιχεία σου άμεσα.
+                <div className="space-y-4">
+                  <div className="flex gap-3">
+                    <input 
+                      type="checkbox" 
+                      id="consent" 
+                      required
+                      className="mt-1 w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <label htmlFor="consent" className="text-sm text-slate-600">
+                      Συμφωνώ με τους <Link href="/terms" className="text-indigo-600 font-bold hover:underline">Όρους Χρήσης</Link> και την <Link href="/gdpr" className="text-indigo-600 font-bold hover:underline">Πολιτική Απορρήτου</Link>. Συγκατατίθεμαι στην προώθηση των στοιχείων μου στον εργοδότη.
+                    </label>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={onClose}
-                      className="rounded-3xl border border-slate-300 px-6 py-3 font-bold text-slate-700 transition hover:bg-slate-50"
-                    >
-                      Ακύρωση
-                    </button>
-                    <button
-                      type="submit"
-                      className="w-full sm:w-auto rounded-3xl bg-slate-900 px-8 py-3 font-bold text-white transition hover:bg-slate-800"
-                    >
-                      Υποβολή Αίτησης
-                    </button>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-2">
+                    <div className="text-xs text-slate-500">
+                      Ο εργοδότης θα λάβει τα στοιχεία σου άμεσα.
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={onClose}
+                        className="rounded-3xl border border-slate-300 px-6 py-3 font-bold text-slate-700 transition hover:bg-slate-50"
+                      >
+                        Ακύρωση
+                      </button>
+                      <button
+                        type="submit"
+                        className="w-full sm:w-auto rounded-3xl bg-slate-900 px-8 py-3 font-bold text-white transition hover:bg-slate-800"
+                      >
+                        Υποβολή Αίτησης
+                      </button>
+                    </div>
                   </div>
                 </div>
               </form>

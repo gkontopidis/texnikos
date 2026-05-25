@@ -23,6 +23,24 @@ export const sendApplicationNotificationEmail = async (employerEmail: string, ap
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
+export const sendVerificationEmail = async (email: string, manageToken: string, jobTitle: string) => {
+  const verifyUrl = `${BASE_URL}/verify/${manageToken}`;
+  try {
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: email,
+      subject: `Επιβεβαίωση αγγελίας: ${jobTitle}`,
+      html: `
+        <h1>Επιβεβαίωση Αγγελίας</h1>
+        <p>Παρακαλώ επιβεβαιώστε το email σας για να δημοσιευτεί η αγγελία σας: <strong>${jobTitle}</strong></p>
+        <a href="${verifyUrl}">Επιβεβαίωση Αγγελίας</a>
+      `,
+    });
+  } catch (error) {
+    console.error("Resend Error (sendVerificationEmail):", error);
+  }
+};
+
 export const sendJobPostedEmail = async (email: string, manageToken: string, jobTitle: string) => {
   const manageUrl = `${BASE_URL}/manage/${manageToken}`;
   

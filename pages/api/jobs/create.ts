@@ -16,46 +16,89 @@ export default async function handler(
   try {
     await connectDB();
 
-    const jobData = req.body;
-    console.log("Creating job with data:", JSON.stringify(jobData, null, 2));
+    const {
+      title, company, location, salary, duration, description, 
+      contactEmail, contactPhone, fullTime, urgent, featured, 
+      plan, isPaid, honeypot // Added honeypot
+    } = req.body;
 
-    const { plan, contactEmail, title, duration, fullTime } = jobData;
-    
-    const now = new Date();
-    const publishAt = plan === "free" 
-      ? new Date(now.getTime() + 72 * 60 * 60 * 1000) 
-      : now;
-      
-    const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days default
-    const featuredUntil = (plan === "featured" || plan === "urgent") 
-      ? expiresAt 
-      : null;
+    // 1. Honeypot check
+    if (honeypot) {
+        return res.status(400).json({ success: false, message: "Spam detected." });
+    }
 
-    const newJob = new Job({
-      ...jobData,
-      duration,
-      fullTime,
-      status: plan === "free" ? "pending" : "active", // Immediate approval for paid
-      publishAt,
-      expiresAt,
-      featuredUntil,
-      createdAt: now,
+    // 2. Disposable email blocking
+    const blockedDomains = ['mailinator.com', 'guerrillamail.com', '10minutemail.com'];
+    const domain = contactEmail.split('@')[1];
+    if (blockedDomains.includes(domain)) {
+        return res.status(400).json({ success: false, message: "Email domain not allowed." });
+    }
+
+    // 3. Duplicate detection (same email posting in last 15 mins)
+    const recentJob = await Job.findOne({ 
+        contactEmail, 
+        createdAt: { $gte: new Date(Date.now() - 15 * 60 * 1000) } 
     });
+    if (recentJob) {
+        return res.status(429).json({ success: false, message: "Πρέπει να περιμένετε 15 λεπτά πριν δημοσιεύσετε ξανά." });
+    }
 
+    // Validate required fields
+    if (!title || !company || !location || !contactEmail) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
+    const now = new Date();
+
+    // Check if employer is already verified
+    const existingJob = await Job.findOne({ contactEmail, emailVerified: true });
+    const isVerified = !!existingJob;
+
+    // Strict field whitelisting for security
+    const jobData = {
+      title, company, location, salary, duration, description, 
+      contactEmail, contactPhone,
+      fullTime: !!fullTime,
+      urgent: !!urgent,
+      featured: !!featured,
+      plan,
+      isPaid: !!isPaid,
+      status: isVerified ? (plan === "free" ? "pending" : "active") : "pending-verification",
+      emailVerified: isVerified,
+      audit: {
+        creatorIP: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
+        userAgent: req.headers["user-agent"],
+        createdAt: now,
+      },
+      createdAt: now,
+    };
+
+    const newJob = new Job(jobData);
     await newJob.save();
 
-    // Send email notification to employer
-    await sendJobPostedEmail(contactEmail, newJob.manageToken, title);
+    // Fire-and-forget: Do not await these to prevent blocking the response
+    (async () => {
+      try {
+        if (isVerified) {
+          await sendJobPostedEmail(contactEmail, newJob.manageToken, title);
+        } else {
+          await sendVerificationEmail(contactEmail, newJob.manageToken, title);
+        }
 
-    // Notify matching job alert subscribers
-    const subscribers = await AlertSubscription.find({ 
-      specialty: newJob.title, 
-      location: newJob.location 
-    });
-    
-    for (const sub of subscribers) {
-      await sendJobAlertEmail(sub.email, newJob.title);
-    }
+        // Notify matching job alert subscribers
+        const subscribers = await AlertSubscription.find({ 
+          specialty: newJob.title, 
+          location: newJob.location,
+          unsubscribed: false
+        });
+        
+        for (const sub of subscribers) {
+          await sendJobAlertEmail(sub.email, newJob.title, sub._id.toString());
+        }
+      } catch (err) {
+        console.error("Background email process error:", err);
+      }
+    })();
 
     return res.status(201).json({
       success: true,
