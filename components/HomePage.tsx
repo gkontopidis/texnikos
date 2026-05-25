@@ -1,13 +1,14 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { filterJobs } from "@/lib/filters";
 import { Job } from "@/types/job";
 import JobCard from "./job/JobCard";
 import JobModal from "./job/JobModal";
 import PostJobFlow from "./job/PostJobFlow";
 import AlertBox from "./alerts/AlertBox";
-import SidebarFilters from "./search/SidebarFilters";
+import JobFilters from "./search/JobFilters";
 
 export const specialtyOptions = [
   "Ηλεκτρολόγος εγκαταστάσεων", "Υδραυλικός", "Ψυκτικός / κλιματισμός", "Χτίστης / μπετατζής", 
@@ -24,15 +25,19 @@ export const locationOptions = [
   "Βόλος", "Ιωάννινα", "Πειραιάς", "Ρόδος", "Χανιά",
 ];
 
-export default function HomePage() {
+function HomeContent() {
+  const searchParams = useSearchParams();
+  const showPostJob = searchParams.get("showPostJob") === "true";
+  const plan = searchParams.get("plan") as "free" | "featured" | "urgent" | null;
+
   const [jobs, setJobs] = useState<Job[]>([]);
   const [savedJobs, setSavedJobs] = useState<string[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [showPostJobModal, setShowPostJobModal] = useState(false);
+  const [showPostJobModal, setShowPostJobModal] = useState(showPostJob);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const [filters, setFilters] = useState({
-    keyword: "", location: "", info: "", 
+    keyword: "", location: "", info: "", specialty: "",
     hasSalary: false, urgentOnly: false, fullTimeOnly: false, partTimeOnly: false, fixedDurationOnly: false
   });
 
@@ -49,15 +54,11 @@ export default function HomePage() {
     if (saved) {
       try { 
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          setSavedJobs(parsed);
-        }
-      } catch (e) { 
-        console.error("Error parsing saved jobs:", e); 
-      }
+        if (Array.isArray(parsed)) setSavedJobs(parsed);
+      } catch (e) { console.error(e); }
     }
     fetchJobs();
-  }, []); // Only runs on mount
+  }, []);
 
   const showToast = (message: string, type: "success" | "error" | "info" = "success") => {
     const id = Date.now();
@@ -66,12 +67,9 @@ export default function HomePage() {
     setTimeout(() => setToasts((current) => current.filter((t) => t.id !== id)), 3500);
   };
 
+  const filteredJobs = useMemo(() => filterJobs(jobs, filters), [jobs, filters]);
   const activeJobCount = jobs.filter(j => j.status === 'active').length;
   const closedJobCount = jobs.filter(j => j.status === 'closed').length;
-
-  const filteredJobs = useMemo(() => {
-    return filterJobs(jobs, filters);
-  }, [jobs, filters]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -86,19 +84,13 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1 className="text-xl font-bold tracking-tight">TexnikesDouleies.gr</h1>
-          
           <nav className="hidden md:flex gap-6 text-sm font-semibold text-slate-600">
             <Link href="/employers" className="hover:text-indigo-600">Για Εργοδότες</Link>
             <Link href="/terms" className="hover:text-indigo-600">Όροι</Link>
             <Link href="/gdpr" className="hover:text-indigo-600">GDPR</Link>
           </nav>
-          
-          <div className="flex items-center gap-4">
-            <button onClick={() => setShowPostJobModal(true)} className="rounded-2xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white">Δημοσίευση</button>
-            <button className="md:hidden text-2xl" onClick={() => setIsMenuOpen(!isMenuOpen)}>☰</button>
-          </div>
+          <button onClick={() => setShowPostJobModal(true)} className="rounded-2xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white">Δημοσίευση</button>
         </div>
-        
         {isMenuOpen && (
           <nav className="md:hidden bg-white border-t border-slate-100 px-6 py-4 flex flex-col gap-4 text-sm font-semibold text-slate-600">
             <Link href="/employers" onClick={() => setIsMenuOpen(false)}>Για Εργοδότες</Link>
@@ -130,36 +122,25 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-[300px,1fr] gap-8">
-          <aside className="space-y-6">
-            <SidebarFilters filters={filters} setFilters={setFilters} />
-          </aside>
-          
+        <div className="max-w-4xl mx-auto">
+          <JobFilters filters={filters} setFilters={setFilters} />
           <div className="space-y-4">
-            <div className="flex justify-end">
-              <p className="font-medium text-slate-600">{filteredJobs.length} αποτελέσματα</p>
+            <div className="flex justify-between items-center mb-6">
+               <h3 className="text-xl font-bold text-slate-900">Αποτελέσματα</h3>
+               <p className="font-medium text-slate-600">{filteredJobs.length} αγγελίες</p>
             </div>
             {filteredJobs.length > 0 ? (
               filteredJobs.map((job) => (
-                <JobCard
-                  key={job._id}
-                  job={job}
-                  isSaved={savedJobs.includes(job._id)}
-                  onSave={(id) => {
-                    if (savedJobs.includes(id)) {
-                      setSavedJobs((current) => current.filter((jobId) => jobId !== id));
-                    } else {
-                      setSavedJobs((current) => [...current, id]);
-                    }
-                  }}
-                  onViewDetails={setSelectedJob}
-                />
+                <JobCard key={job._id} job={job} isSaved={savedJobs.includes(job._id)} onSave={(id) => {
+                  if (savedJobs.includes(id)) setSavedJobs((current) => current.filter((jobId) => jobId !== id));
+                  else setSavedJobs((current) => [...current, id]);
+                }} onViewDetails={setSelectedJob} />
               ))
             ) : (
               <div className="text-center py-20 bg-white rounded-[32px] border border-slate-200 shadow-sm">
                 <div className="text-6xl mb-4">🔍</div>
                 <h4 className="text-xl font-bold text-slate-900 mb-2">Δεν βρέθηκαν αγγελίες</h4>
-                <button onClick={() => setFilters({ keyword: "", location: "", info: "", hasSalary: false, urgentOnly: false, fullTimeOnly: false, partTimeOnly: false, fixedDurationOnly: false })} className="bg-indigo-600 text-white px-8 py-3 rounded-2xl font-bold">Καθαρισμός φίλτρων</button>
+                <button onClick={() => setFilters({ keyword: "", location: "", info: "", specialty: "", hasSalary: false, urgentOnly: false, fullTimeOnly: false, partTimeOnly: false, fixedDurationOnly: false })} className="bg-indigo-600 text-white px-8 py-3 rounded-2xl font-bold">Καθαρισμός φίλτρων</button>
               </div>
             )}
           </div>
@@ -167,15 +148,11 @@ export default function HomePage() {
       </main>
 
       {selectedJob && <JobModal job={selectedJob} onClose={() => setSelectedJob(null)} showToast={showToast} />}
-      {showPostJobModal && <PostJobFlow onClose={() => setShowPostJobModal(false)} onJobCreated={fetchJobs} showToast={showToast} specialtyOptions={specialtyOptions} locationOptions={locationOptions} />}
-      <footer className="border-t bg-white py-8">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-          <div>© 2026 TexnikesDouleies.gr</div>
-          <div className="flex gap-6">
-            <a href="mailto:support@texnikesdouleies.gr" className="hover:text-indigo-600 transition">Επικοινωνία</a>
-          </div>
-        </div>
-      </footer>
+      {showPostJobModal && <PostJobFlow onClose={() => setShowPostJobModal(false)} onJobCreated={fetchJobs} showToast={showToast} specialtyOptions={specialtyOptions} locationOptions={locationOptions} initialPlan={plan} />}
     </div>
   );
+}
+
+export default function HomePage() {
+  return <Suspense><HomeContent /></Suspense>;
 }

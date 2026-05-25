@@ -13,6 +13,7 @@ export function filterJobs(
     keyword: string; 
     location: string; 
     info: string;
+    specialty: string;
     hasSalary: boolean;
     urgentOnly: boolean;
     fullTimeOnly: boolean;
@@ -23,6 +24,7 @@ export function filterJobs(
   const normalizedKeyword = normalizeGreek(filters.keyword);
   const normalizedLocation = normalizeGreek(filters.location);
   const normalizedInfo = normalizeGreek(filters.info);
+  const normalizedSpecialty = normalizeGreek(filters.specialty);
 
   return jobs.filter((job) => {
     // 1. Keyword search
@@ -38,11 +40,11 @@ export function filterJobs(
       normalizedLocation === normalizeGreek("Ολόκληρη η Ελλάδα") ||
       normalizeGreek(job.location || "").includes(normalizedLocation);
 
-    // 3. Category/Info filter
-    const matchesInfo =
-      normalizedInfo.length === 0 ||
-      normalizeGreek(job.title || "").includes(normalizedInfo) ||
-      (job.category && normalizeGreek(job.category).includes(normalizedInfo));
+    // 3. Specialty/Category filter
+    const matchesSpecialty = 
+        normalizedSpecialty.length === 0 ||
+        normalizeGreek(job.title || "").includes(normalizedSpecialty) ||
+        (job.category && normalizeGreek(job.category).includes(normalizedSpecialty));
 
     // 4. Advanced Filters
     const matchesSalary = !filters.hasSalary || !!job.salary;
@@ -50,12 +52,10 @@ export function filterJobs(
     const matchesFullTime = !filters.fullTimeOnly || job.fullTime === true;
     const matchesPartTime = !filters.partTimeOnly || job.fullTime === false;
     
-    // Logic: If "Fixed Duration" is checked, we want jobs where duration is defined 
-    // AND it's not "Permanent" / "Μόνιμη"
-    const normalizedDuration = normalizeGreek(job.duration || "");
-    const isPermanent = normalizedDuration.includes("μονιμη") || normalizedDuration.includes("αοριστου");
+    const normalizedDuration = normalizeGreek(job.duration?.type || "");
+    const isPermanent = normalizedDuration.includes("μονιμη") || normalizedDuration.includes("αοριστου") || job.duration?.type === "permanent";
     const matchesFixedDuration = !filters.fixedDurationOnly || (!!job.duration && !isPermanent);
 
-    return matchesKeyword && matchesLocation && matchesInfo && matchesSalary && matchesUrgent && matchesFullTime && matchesPartTime && matchesFixedDuration;
+    return matchesKeyword && matchesLocation && matchesSpecialty && matchesSalary && matchesUrgent && matchesFullTime && matchesPartTime && matchesFixedDuration;
   });
 }
