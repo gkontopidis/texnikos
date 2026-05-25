@@ -1,0 +1,22 @@
+export type Job = {
+  _id: string;
+  title: string;
+  location: string;
+  salary?: string;
+  company: string;
+  urgent: boolean;
+  fullTime?: boolean;
+  description?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  verifiedEmployer?: boolean;
+  salaryVerified?: boolean;
+  responseRate?: number;
+  createdAt?: string;
+  status?: "pending" | "active" | "rejected" | "scheduled" | "expired";
+  plan?: "free" | "featured" | "urgent";
+  featuredUntil?: string;
+  publishAt?: string;
+  expiresAt?: string;
+  manageToken?: string;
+};
