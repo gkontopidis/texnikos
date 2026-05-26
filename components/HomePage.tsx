@@ -27,8 +27,8 @@ export const locationOptions = [
 
 function HomeContent() {
   const searchParams = useSearchParams();
-  const showPostJob = searchParams.get("showPostJob") === "true";
-  const plan = searchParams.get("plan") as "free" | "featured" | "urgent" | null;
+  const showPostJob = searchParams ? searchParams.get("showPostJob") === "true" : false;
+  const plan = searchParams ? searchParams.get("plan") as "free" | "featured" | "urgent" | null : null;
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [savedJobs, setSavedJobs] = useState<string[]>([]);
