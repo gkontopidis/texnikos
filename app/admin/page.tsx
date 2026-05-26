@@ -209,7 +209,11 @@ export default function AdminPage() {
                       value={editingJob.duration?.amount || 1} 
                       onChange={(e) => setEditingJob({
                         ...editingJob, 
-                        duration: { ...editingJob.duration, amount: parseInt(e.target.value) || 0 }
+                        duration: { 
+                          type: editingJob.duration?.type || "fixed",
+                          amount: parseInt(e.target.value) || 0,
+                          unit: editingJob.duration?.unit || "months"
+                        }
                       })} 
                     />
                   </div>
@@ -220,7 +224,11 @@ export default function AdminPage() {
                       value={editingJob.duration?.unit || "months"} 
                       onChange={(e) => setEditingJob({
                         ...editingJob, 
-                        duration: { ...editingJob.duration, unit: e.target.value }
+                        duration: { 
+                          type: editingJob.duration?.type || "fixed",
+                          amount: editingJob.duration?.amount || 0,
+                          unit: e.target.value 
+                        }
                       })}
                     >
                       <option value="days">Ημέρες</option>
