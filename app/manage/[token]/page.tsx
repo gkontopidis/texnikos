@@ -75,7 +75,7 @@ export default function ManageJobPage({ params }: { params: Promise<{ token: str
   const isClosed = job.status === "closed";
   const isFree = job.plan === "free";
   
-  const lastRefresh = new Date(job.createdAt);
+  const lastRefresh = new Date(job.createdAt || new Date());
   const now = new Date();
   const hoursSinceRefresh = (now.getTime() - lastRefresh.getTime()) / (1000 * 60 * 60);
   const canRefresh = !isFree && hoursSinceRefresh >= 24;
@@ -177,7 +177,14 @@ export default function ManageJobPage({ params }: { params: Promise<{ token: str
                       type="number"
                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 bg-white"
                       value={editData.duration?.amount || 1} 
-                      onChange={(e) => setEditData({...editData, duration: { ...editData.duration, amount: parseInt(e.target.value) || 0 }})} 
+                      onChange={(e) => setEditData({
+                        ...editData, 
+                        duration: { 
+                          type: editData.duration?.type || "fixed",
+                          amount: parseInt(e.target.value) || 0,
+                          unit: editData.duration?.unit || "months"
+                        }
+                      })} 
                     />
                   </div>
                   <div>
@@ -185,7 +192,14 @@ export default function ManageJobPage({ params }: { params: Promise<{ token: str
                     <select 
                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 bg-white"
                       value={editData.duration?.unit || "months"} 
-                      onChange={(e) => setEditData({...editData, duration: { ...editData.duration, unit: e.target.value }})}
+                      onChange={(e) => setEditData({
+                        ...editData, 
+                        duration: { 
+                          type: editData.duration?.type || "fixed",
+                          amount: editData.duration?.amount || 0,
+                          unit: e.target.value 
+                        }
+                      })}
                     >
                       <option value="days">Ημέρες</option>
                       <option value="months">Μήνες</option>

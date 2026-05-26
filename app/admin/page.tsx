@@ -268,12 +268,11 @@ export default function AdminPage() {
               <div>
                 <label className="block text-sm font-bold mb-2">Πλάνο</label>
                 <select 
-                  className="w-full px-4 py-2.5 border rounded-xl bg-slate-50 focus:bg-white transition font-bold"
-                  value={editingJob.plan} 
-                  onChange={(e) => setEditingJob({...editingJob, plan: e.target.value})}
+                className="w-full px-4 py-2.5 border rounded-xl bg-slate-50 focus:bg-white transition font-bold"
+                value={editingJob.plan} 
+                onChange={(e) => setEditingJob({...editingJob, plan: e.target.value as "free" | "urgent" | "featured"})}
                 >
-                  <option value="free">Δωρεάν</option>
-                  <option value="urgent">Επείγουσα</option>
+                <option value="free">Δωρεάν</option>                  <option value="urgent">Επείγουσα</option>
                   <option value="featured">Προβεβλημένη</option>
                 </select>
               </div>
