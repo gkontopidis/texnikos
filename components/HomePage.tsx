@@ -36,6 +36,7 @@ function HomeContent() {
   const [showPostJobModal, setShowPostJobModal] = useState(showPostJob);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
+  const [showSavedOnly, setShowSavedOnly] = useState(false);
   const [filters, setFilters] = useState({
     keyword: "", location: "", info: "", specialty: "",
     hasSalary: false, urgentOnly: false, fullTimeOnly: false, partTimeOnly: false, fixedDurationOnly: false
@@ -67,7 +68,13 @@ function HomeContent() {
     setTimeout(() => setToasts((current) => current.filter((t) => t.id !== id)), 3500);
   };
 
-  const filteredJobs = useMemo(() => filterJobs(jobs, filters), [jobs, filters]);
+  const filteredJobs = useMemo(() => {
+    let result = filterJobs(jobs, filters);
+    if (showSavedOnly) {
+      result = result.filter(job => savedJobs.includes(job._id));
+    }
+    return result;
+  }, [jobs, filters, showSavedOnly, savedJobs]);
   const activeJobCount = jobs.filter(j => j.status === 'active').length;
   const closedJobCount = jobs.filter(j => j.status === 'closed').length;
 
@@ -124,7 +131,7 @@ function HomeContent() {
         </div>
 
         <div className="max-w-4xl mx-auto">
-          <JobFilters filters={filters} setFilters={setFilters} />
+          <JobFilters filters={filters} setFilters={setFilters} showSavedOnly={showSavedOnly} setShowSavedOnly={setShowSavedOnly} />
           <div className="space-y-4">
             <div className="flex justify-between items-center mb-6">
                <h3 className="text-xl font-bold text-slate-900">Αποτελέσματα</h3>

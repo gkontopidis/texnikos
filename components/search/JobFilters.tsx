@@ -3,9 +3,11 @@ import { specialtyOptions } from "../HomePage";
 interface JobFiltersProps {
   filters: any;
   setFilters: (filters: any) => void;
+  showSavedOnly?: boolean;
+  setShowSavedOnly?: (show: boolean) => void;
 }
 
-export default function JobFilters({ filters, setFilters }: JobFiltersProps) {
+export default function JobFilters({ filters, setFilters, showSavedOnly, setShowSavedOnly }: JobFiltersProps) {
   const toggle = (key: string, value: boolean) => {
     setFilters({ ...filters, [key]: value });
   };
@@ -39,6 +41,9 @@ export default function JobFilters({ filters, setFilters }: JobFiltersProps) {
       </select>
 
       <div className="flex flex-wrap gap-2 items-center">
+        {setShowSavedOnly && (
+          <Chip label="Αποθηκευμένες ⭐" active={showSavedOnly || false} onClick={() => setShowSavedOnly(!showSavedOnly)} />
+        )}
         <Chip label="Επείγουσες ⚡" active={filters.urgentOnly} onClick={() => toggle("urgentOnly", !filters.urgentOnly)} />
         <Chip label="Πλήρης" active={filters.fullTimeOnly} onClick={() => { toggle("fullTimeOnly", !filters.fullTimeOnly); if(!filters.fullTimeOnly) setFilters({...filters, fullTimeOnly: true, partTimeOnly: false}) }} />
         <Chip label="Μερική" active={filters.partTimeOnly} onClick={() => { toggle("partTimeOnly", !filters.partTimeOnly); if(!filters.partTimeOnly) setFilters({...filters, partTimeOnly: true, fullTimeOnly: false}) }} />
