@@ -22,6 +22,11 @@ if (!MONGODB_URI.startsWith("mongodb")) {
 }
 
 // Global cache for connection (critical for Vercel/serverless)
+/**
+ * Global is used here to maintain a cached connection across hot reloads
+ * in development. This prevents connections from growing exponentially
+ * during API Route usage.
+ */
 let cached = (global as any).mongoose;
 
 if (!cached) {
@@ -39,16 +44,18 @@ export async function connectDB() {
       dbName: "texnikos",
     };
 
+    console.log("MongoDB: Opening new connection...");
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      console.log("MongoDB connected successfully");
       return mongoose;
     });
   }
 
   try {
     cached.conn = await cached.promise;
+    console.log("MongoDB connected successfully");
   } catch (e) {
     cached.promise = null; // Reset promise on failure to allow retry
+    console.error("MongoDB connection error:", e);
     throw e;
   }
 
