@@ -2,14 +2,15 @@
 
 import { useState, use, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Job } from "@/types/job";
 
 export default function ManageJobPage({ params }: { params: Promise<{ token: string }> }) {
   const resolvedParams = use(params);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [job, setJob] = useState<any>(null);
+  const [job, setJob] = useState<Job | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState<any>({});
+  const [editData, setEditData] = useState<Partial<Job>>({});
   
   // Toast system
   const [toasts, setToasts] = useState<{ id: number; message: string; type: "success" | "error" | "info"; visible: boolean }[]>([]);

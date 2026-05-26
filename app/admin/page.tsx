@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { Job } from "@/types/job";
 
 export default function AdminPage() {
-  const [jobs, setJobs] = useState<any[]>([]);
-  const [editingJob, setEditingJob] = useState<any>(null);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [editingJob, setEditingJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
   const [search, setSearch] = useState("");
