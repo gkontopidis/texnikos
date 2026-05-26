@@ -39,11 +39,21 @@ export default async function handler(
     // 2. Show 'scheduled' jobs only if now >= publishAt
     // Priority: Urgent (⚡) > Featured (⭐) > Free (standard)
     const jobs = await Job.find({
-      $or: [
-        { status: "active" },
-        { 
-          status: "scheduled", 
-          publishAt: { $lte: now } 
+      $and: [
+        {
+          $or: [
+            { status: "active" },
+            { 
+              status: "scheduled", 
+              publishAt: { $lte: now } 
+            }
+          ]
+        },
+        {
+          $or: [
+            { expiresAt: { $exists: false } },
+            { expiresAt: { $gt: now } }
+          ]
         }
       ]
     }).sort({ urgent: -1, featured: -1, createdAt: -1 });

@@ -31,28 +31,10 @@ export default async function handler(
         job.status = "closed";
         break;
       case "refresh":
-        // 1. Check if plan is free
-        if (job.plan === "free") {
-          return res.status(403).json({ 
-            success: false, 
-            message: "Η ανανέωση δεν είναι διαθέσιμη για δωρεάν αγγελίες. Αναβαθμίστε την αγγελία σας για αυτή τη λειτουργία." 
-          });
-        }
-
-        // 2. Check for 24h limit (using createdAt as the reference for the last bump)
+        // Extend expiration by 30 days
         const now = new Date();
-        const lastRefresh = new Date(job.createdAt);
-        const hoursSinceLastRefresh = (now.getTime() - lastRefresh.getTime()) / (1000 * 60 * 60);
-
-        if (hoursSinceLastRefresh < 24) {
-          const hoursRemaining = Math.ceil(24 - hoursSinceLastRefresh);
-          return res.status(429).json({ 
-            success: false, 
-            message: `Μπορείτε να ανανεώσετε την αγγελία σας ξανά σε ${hoursRemaining} ώρες.` 
-          });
-        }
-
-        job.createdAt = now;
+        job.expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+        job.status = "active"; // Ensure it's active
         break;
       case "update":
         if (data) {
