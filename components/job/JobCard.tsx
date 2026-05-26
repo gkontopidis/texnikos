@@ -10,11 +10,34 @@ interface JobCardProps {
 }
 
 export default function JobCard({ job, isSaved, onSave, onViewDetails }: JobCardProps) {
+  const getRelativeDate = (dateStr?: string) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffTime = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return "Δημοσιεύτηκε σήμερα";
+    if (diffDays === 1) return "Δημοσιεύτηκε εχθές";
+    return `Δημοσιεύτηκε πριν από ${diffDays} ημέρες`;
+  };
+
+  const getExpiresIn = (expiresStr?: string) => {
+    if (!expiresStr) return "";
+    const date = new Date(expiresStr);
+    const now = new Date();
+    const diffTime = date.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays <= 0) return "Λήγει σήμερα";
+    return `Ενεργή για άλλες ${diffDays} ημέρες`;
+  };
+
   return (
     <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-3 mb-3">
+          <div className="flex flex-wrap items-center gap-3 mb-2">
             <h4 className="text-2xl font-semibold text-slate-900 truncate">{job.title}</h4>
             <div className="flex flex-wrap gap-2">
               {job.urgent && (
@@ -23,6 +46,12 @@ export default function JobCard({ job, isSaved, onSave, onViewDetails }: JobCard
                 </span>
               )}
             </div>
+          </div>
+          
+          <div className="flex gap-4 text-[10px] sm:text-xs font-bold text-slate-400 mb-4 uppercase tracking-wider">
+            <span>{getRelativeDate(job.createdAt)}</span>
+            <span>•</span>
+            <span className="text-indigo-600">{getExpiresIn(job.expiresAt)}</span>
           </div>
 
           <div className="flex flex-row flex-nowrap items-center gap-x-3 text-slate-500 mb-4 text-[10px] sm:text-xs overflow-hidden min-w-0">
