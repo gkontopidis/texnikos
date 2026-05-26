@@ -47,19 +47,20 @@ export default function AdminPage() {
     fetchJobs();
   };
 
-  const handleModerate = async (jobId: string, action: "approve" | "reject") => {
+  const handleDelete = async (jobId: string) => {
+    if (!confirm("Είσαι σίγουρος ότι θέλεις να διαγράψεις αυτή την αγγελία;")) return;
     try {
-      const res = await fetch("/api/admin/moderate", {
-        method: "POST",
+      const res = await fetch("/api/admin/jobs/delete", {
+        method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobId, action }),
+        body: JSON.stringify({ jobId }),
       });
       const data = await res.json();
       if (data.success) {
-        showToast(action === "approve" ? "Η αγγελία εγκρίθηκε!" : "Η αγγελία απορρίφθηκε.", action === "approve" ? "success" : "info");
+        showToast("Η αγγελία διαγράφηκε!", "success");
         fetchJobs();
       } else {
-        showToast("Αποτυχία ενέργειας", "error");
+        showToast(data.message || "Αποτυχία διαγραφής", "error");
       }
     } catch (error) {
       showToast("Σφάλμα σύνδεσης", "error");
@@ -369,6 +370,12 @@ export default function AdminPage() {
                           Απόρριψη
                         </button>
                       )}
+                      <button 
+                        onClick={() => handleDelete(job._id)}
+                        className="bg-rose-50 text-rose-600 border border-rose-100 px-5 py-2 rounded-xl font-bold text-sm hover:bg-rose-100 transition"
+                      >
+                        Διαγραφή
+                      </button>
                     </div>
                   </div>
                 </div>

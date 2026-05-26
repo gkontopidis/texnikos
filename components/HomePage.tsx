@@ -157,6 +157,7 @@ function HomeContent() {
             <Link href="/terms" className="hover:text-indigo-600 transition">Όροι Χρήσης</Link>
             <Link href="/gdpr" className="hover:text-indigo-600 transition">Πολιτική Απορρήτου</Link>
             <Link href="/cookies" className="hover:text-indigo-600 transition">Πολιτική Cookies</Link>
+            <Link href="/faq" className="hover:text-indigo-600 transition">FAQ</Link>
             <a href="mailto:info.texnikesdouleies@gmail.com" className="hover:text-indigo-600 transition">Επικοινωνία</a>
           </div>
         </div>

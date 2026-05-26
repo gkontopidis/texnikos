@@ -108,7 +108,7 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
                   <div className="font-bold text-slate-500">Προβεβλημένη Αγγελία ⭐</div>
                   <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-black uppercase text-slate-500">Σύντομα κοντά σας</span>
                 </div>
-                <div className="text-sm text-slate-400">Άμεση έγκριση, κορυφαία εμφάνιση & σήμανση.</div>
+                <div className="text-sm text-emerald-700/70">Άμεση έγκριση & εμφάνιση πριν από τις δωρεάν.</div>
               </div>
               <div className="text-xl font-bold text-slate-400">€49</div>
             </button>          </div>
