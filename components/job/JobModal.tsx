@@ -29,6 +29,17 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
     return `Δημοσιεύτηκε πριν από ${diffDays} ημέρες`;
   };
 
+  const getExpiresIn = (expiresStr?: string) => {
+    if (!expiresStr) return "";
+    const date = new Date(expiresStr);
+    const now = new Date();
+    const diffTime = date.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays <= 0) return "Λήγει σήμερα";
+    return `Ενεργή για άλλες ${diffDays} ημέρες`;
+  };
+
   const getResponseRateColor = (rate?: number) => {
     if (rate === undefined) return "text-slate-400";
     if (rate >= 90) return "text-emerald-600";
@@ -93,10 +104,13 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
             <div className="flex items-center gap-2 mb-1">
               <h3 className="text-2xl font-bold">{job.title}</h3>
             </div>
-            <div className="flex items-center gap-3 text-sm text-slate-500">
-              <span>{job.company} · {job.location}</span>
-              <span>•</span>
-              <span className="font-medium text-slate-400">{formatRelativeDate(job.createdAt)}</span>
+            <div className="flex gap-4 text-[10px] font-black uppercase tracking-wider mb-2">
+              <span className="text-slate-500">{formatRelativeDate(job.createdAt)}</span>
+              <span className="text-slate-300">•</span>
+              <span className="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">{getExpiresIn(job.expiresAt)}</span>
+            </div>
+            <div className="text-sm text-slate-500">
+              {job.company} · {job.location}
             </div>
           </div>
           <button

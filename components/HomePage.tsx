@@ -133,8 +133,11 @@ function HomeContent() {
             {filteredJobs.length > 0 ? (
               filteredJobs.map((job) => (
                 <JobCard key={job._id} job={job} isSaved={savedJobs.includes(job._id)} onSave={(id) => {
-                  if (savedJobs.includes(id)) setSavedJobs((current) => current.filter((jobId) => jobId !== id));
-                  else setSavedJobs((current) => [...current, id]);
+                  const updated = savedJobs.includes(id) 
+                    ? savedJobs.filter((jobId) => jobId !== id)
+                    : [...savedJobs, id];
+                  setSavedJobs(updated);
+                  localStorage.setItem("savedJobs", JSON.stringify(updated));
                 }} onViewDetails={setSelectedJob} />
               ))
             ) : (

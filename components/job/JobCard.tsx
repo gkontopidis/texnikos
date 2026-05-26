@@ -48,10 +48,10 @@ export default function JobCard({ job, isSaved, onSave, onViewDetails }: JobCard
             </div>
           </div>
           
-          <div className="flex gap-4 text-[10px] sm:text-xs font-bold text-slate-400 mb-4 uppercase tracking-wider">
-            <span>{getRelativeDate(job.createdAt)}</span>
-            <span>•</span>
-            <span className="text-indigo-600">{getExpiresIn(job.expiresAt)}</span>
+          <div className="flex gap-4 text-[10px] sm:text-xs font-black mb-4 uppercase tracking-wider">
+            <span className="text-slate-500">{getRelativeDate(job.createdAt)}</span>
+            <span className="text-slate-300">•</span>
+            <span className="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">{getExpiresIn(job.expiresAt)}</span>
           </div>
 
           <div className="flex flex-row flex-nowrap items-center gap-x-3 text-slate-500 mb-4 text-[10px] sm:text-xs overflow-hidden min-w-0">
