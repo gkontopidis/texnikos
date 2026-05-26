@@ -23,7 +23,7 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
     fullTime: true, urgent: false, honeypot: ""
   });
 
-  const handlePlanSelect = (plan: "free" | "featured" | "urgent") => {
+  const handlePlanSelect = (plan: "free" | "featured") => {
     setSelectedPlan(plan);
     setStep("form");
   };
@@ -51,8 +51,8 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
         body: JSON.stringify({
           ...formData,
           plan: selectedPlan,
-          urgent: selectedPlan === "urgent" || formData.urgent,
-          featured: selectedPlan === "featured" || selectedPlan === "urgent",
+          urgent: selectedPlan === "featured" || formData.urgent,
+          featured: selectedPlan === "featured",
           isPaid: selectedPlan !== "free",
         }),
       });
@@ -102,27 +102,16 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
               </div>
               <div className="text-xl font-bold">€0</div>
             </button>
-            <button onClick={() => handlePlanSelect("featured")} className="w-full flex items-center justify-between rounded-[24px] border-2 border-emerald-100 bg-emerald-50/30 p-5 text-left transition hover:border-emerald-200 hover:bg-emerald-50/50">
+            <button disabled className="w-full flex items-center justify-between rounded-[24px] border-2 border-slate-200 bg-slate-100 p-5 text-left opacity-70 cursor-not-allowed">
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="font-bold text-emerald-900">Προβεβλημένη Αγγελία ⭐</div>
-                  <span className="rounded-full bg-emerald-200 px-2 py-0.5 text-[10px] font-black uppercase text-emerald-800">Beta</span>
+                  <div className="font-bold text-slate-500">Προβεβλημένη Αγγελία ⭐</div>
+                  <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-black uppercase text-slate-500">Σύντομα κοντά σας</span>
                 </div>
-                <div className="text-sm text-emerald-700/70">Άμεση έγκριση & εμφάνιση πάνω από τις δωρεάν.</div>
+                <div className="text-sm text-slate-400">Άμεση έγκριση, κορυφαία εμφάνιση & σήμανση.</div>
               </div>
-              <div className="text-xl font-bold">€49</div>
-            </button>
-            <button onClick={() => handlePlanSelect("urgent")} className="w-full flex items-center justify-between rounded-[24px] border-2 border-amber-100 bg-amber-50/30 p-5 text-left transition hover:border-amber-200 hover:bg-amber-50/50">
-              <div>
-                <div className="flex items-center gap-2">
-                  <div className="font-bold text-amber-900">Επείγουσα Αγγελία ⚡</div>
-                  <span className="rounded-full bg-amber-200 px-2 py-0.5 text-[10px] font-black uppercase text-amber-900">Beta</span>
-                </div>
-                <div className="text-sm text-amber-700/70">Εμφάνιση πάνω από τις προβεβλημένες με σήμανση.</div>
-              </div>
-              <div className="text-xl font-bold text-amber-900">€99</div>
-            </button>
-          </div>
+              <div className="text-xl font-bold text-slate-400">€49</div>
+            </button>          </div>
         )}
 
         {step === "form" && (
