@@ -68,6 +68,7 @@ export default function AdminPage() {
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!editingJob) return;
     setLoading(true);
     try {
       const res = await fetch("/api/admin/jobs/update", {
