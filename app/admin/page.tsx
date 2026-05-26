@@ -47,6 +47,25 @@ export default function AdminPage() {
     fetchJobs();
   };
 
+  const handleModerate = async (jobId: string, action: "approve" | "reject") => {
+    try {
+      const res = await fetch("/api/admin/moderate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId, action }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(action === "approve" ? "Η αγγελία εγκρίθηκε!" : "Η αγγελία απορρίφθηκε.", action === "approve" ? "success" : "info");
+        fetchJobs();
+      } else {
+        showToast("Αποτυχία ενέργειας", "error");
+      }
+    } catch (error) {
+      showToast("Σφάλμα σύνδεσης", "error");
+    }
+  };
+
   const handleDelete = async (jobId: string) => {
     if (!confirm("Είσαι σίγουρος ότι θέλεις να διαγράψεις αυτή την αγγελία;")) return;
     try {
