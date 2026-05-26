@@ -129,7 +129,8 @@ export default function AdminPage() {
               className="px-4 py-2 rounded-xl border border-indigo-200 bg-white font-semibold"
             >
               <option value="all">Όλες</option>
-              <option value="pending">Εκκρεμείς</option>
+              <option value="pending-verification">Προς Επιβεβαίωση</option>
+              <option value="scheduled">Προγραμματισμένες</option>
               <option value="active">Ενεργές</option>
               <option value="closed">Κλειστές</option>
               <option value="rejected">Απορριφθείσες</option>
@@ -247,7 +248,8 @@ export default function AdminPage() {
                   value={editingJob.status} 
                   onChange={(e) => setEditingJob({...editingJob, status: e.target.value})}
                 >
-                  <option value="pending">Σε εκκρεμότητα</option>
+                  <option value="pending-verification">Προς Επιβεβαίωση</option>
+                  <option value="scheduled">Προγραμματισμένη</option>
                   <option value="active">Ενεργή</option>
                   <option value="rejected">Απορρίφθηκε</option>
                   <option value="closed">Κλειστή</option>
@@ -317,11 +319,13 @@ export default function AdminPage() {
                         <div className="flex gap-1.5">
                           <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase ${
                             job.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
-                            job.status === 'pending' ? 'bg-orange-100 text-orange-700' :
+                            job.status === 'pending-verification' ? 'bg-orange-100 text-orange-700' :
+                            job.status === 'scheduled' ? 'bg-blue-100 text-blue-700' :
                             'bg-slate-100 text-slate-600'
                           }`}>
                             {job.status === 'active' ? 'Ενεργή' : 
-                             job.status === 'pending' ? 'Εκκρεμής' :
+                             job.status === 'pending-verification' ? 'Προς Επιβεβαίωση' :
+                             job.status === 'scheduled' ? 'Προγραμματισμένη' :
                              job.status === 'rejected' ? 'Απορρίφθηκε' :
                              job.status === 'closed' ? 'Κλειστή' : 'Έληξε'}
                           </span>
@@ -335,7 +339,7 @@ export default function AdminPage() {
                     </div>
                     
                     <div className="flex flex-wrap gap-2">
-                      {job.status === 'pending' && (
+                      {(job.status === 'pending-verification' || job.status === 'scheduled') && (
                         <button 
                           onClick={() => handleModerate(job._id, "approve")}
                           className="bg-emerald-500 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-emerald-600 transition"

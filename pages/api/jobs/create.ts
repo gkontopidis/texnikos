@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
 import AlertSubscription from "@/models/AlertSubscription";
-import { sendJobPostedEmail } from "@/lib/mail/emailService";
+import { sendJobPostedEmail, sendVerificationEmail } from "@/lib/mail/emailService";
 import { sendJobAlertEmail } from "@/lib/mail/alertService";
 
 export default async function handler(
@@ -54,6 +54,11 @@ export default async function handler(
     const existingJob = await Job.findOne({ contactEmail, emailVerified: true });
     const isVerified = !!existingJob;
 
+    // Calculate publish date: 72 hours delay for free plan
+    const publishAt = plan === "free" 
+      ? new Date(now.getTime() + 72 * 60 * 60 * 1000) 
+      : now;
+
     // Strict field whitelisting for security
     const jobData = {
       title, company, location, salary, duration, description, 
@@ -63,7 +68,8 @@ export default async function handler(
       featured: !!featured,
       plan,
       isPaid: !!isPaid,
-      status: isVerified ? (plan === "free" ? "pending" : "active") : "pending-verification",
+      status: isVerified ? (plan === "free" ? "scheduled" : "active") : "pending-verification",
+      publishAt,
       emailVerified: isVerified,
       audit: {
         creatorIP: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
@@ -85,15 +91,17 @@ export default async function handler(
           await sendVerificationEmail(contactEmail, newJob.manageToken, title);
         }
 
-        // Notify matching job alert subscribers
-        const subscribers = await AlertSubscription.find({ 
-          specialty: newJob.title, 
-          location: newJob.location,
-          unsubscribed: false
-        });
-        
-        for (const sub of subscribers) {
-          await sendJobAlertEmail(sub.email, newJob.title, sub._id.toString());
+        if (newJob.status === "active") {
+          // Notify matching job alert subscribers
+          const subscribers = await AlertSubscription.find({ 
+            specialty: newJob.title, 
+            location: newJob.location,
+            unsubscribed: false
+          });
+          
+          for (const sub of subscribers) {
+            await sendJobAlertEmail(sub.email, newJob.title, sub._id.toString());
+          }
         }
       } catch (err) {
         console.error("Background email process error:", err);

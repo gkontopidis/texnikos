@@ -63,6 +63,32 @@ export const sendJobPostedEmail = async (email: string, manageToken: string, job
   return { success: true };
 };
 
+export const sendJobActivatedEmail = async (email: string, manageToken: string, jobTitle: string) => {
+  const manageUrl = `${BASE_URL}/manage/${manageToken}`;
+  const jobUrl = `${BASE_URL}/?search=${encodeURIComponent(jobTitle)}`;
+
+  try {
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: email,
+      subject: `Η αγγελία σας είναι πλέον LIVE: ${jobTitle}`,
+      html: `
+        <h1>Η αγγελία σας δημοσιεύτηκε!</h1>
+        <p>Η αγγελία σας "<strong>${jobTitle}</strong>" είναι πλέον ορατή σε όλους τους υποψήφιους.</p>
+        <div style="margin: 20px 0;">
+          <a href="${jobUrl}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Δείτε την Αγγελία σας</a>
+        </div>
+        <p>Μπορείτε να τη διαχειριστείτε από τον παρακάτω σύνδεσμο:</p>
+        <a href="${manageUrl}">Διαχείριση Αγγελίας</a>
+      `,
+    });
+  } catch (error) {
+    console.error("Resend Error (sendJobActivatedEmail):", error);
+  }
+
+  return { success: true };
+};
+
 export const sendExpirationReminderEmail = async (email: string, manageToken: string, jobTitle: string) => {
   const manageUrl = `${BASE_URL}/manage/${manageToken}`;
   

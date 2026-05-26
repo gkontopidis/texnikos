@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Mark as verified
     job.emailVerified = true;
-    job.status = job.plan === "free" ? "pending" : "active";
+    job.status = job.plan === "free" ? "scheduled" : "active";
     
     // Set publish/expire dates based on plan
     const now = new Date();
@@ -36,12 +36,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     (async () => {
       try {
         await sendJobPostedEmail(job.contactEmail, job.manageToken, job.title);
-        const subscribers = await AlertSubscription.find({ 
-          specialty: job.title, 
-          location: job.location 
-        });
-        for (const sub of subscribers) {
-          await sendJobAlertEmail(sub.email, job.title);
+        
+        if (job.status === "active") {
+          const subscribers = await AlertSubscription.find({ 
+            specialty: job.title, 
+            location: job.location,
+            unsubscribed: false
+          });
+          for (const sub of subscribers) {
+            await sendJobAlertEmail(sub.email, job.title, sub._id.toString());
+          }
         }
       } catch (err) {
         console.error("Verification email background error:", err);

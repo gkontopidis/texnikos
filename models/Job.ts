@@ -23,7 +23,7 @@ const JobSchema = new mongoose.Schema({
   contactEmail: String,
   status: { 
     type: String, 
-    enum: ["pending", "active", "closed", "expired", "rejected", "scheduled", "pending-verification"],
+    enum: ["active", "closed", "expired", "rejected", "scheduled", "pending-verification"],
     default: "pending-verification" 
   },
   audit: {

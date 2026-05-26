@@ -13,8 +13,38 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TexnikesDouleies.gr | Τεχνικές Θέσεις Εργασίας στην Ελλάδα",
+  title: {
+    default: "TexnikesDouleies.gr | Τεχνικές Θέσεις Εργασίας στην Ελλάδα",
+    template: "%s | TexnikesDouleies.gr"
+  },
   description: "Η εξειδικευμένη πλατφόρμα εύρεσης εργασίας για τεχνικά επαγγέλματα στην Ελλάδα. Βρείτε θέσεις για ηλεκτρολόγους, υδραυλικούς, ψυκτικούς και άλλες ειδικότητες.",
+  keywords: ["εργασία", "τεχνικοί", "ηλεκτρολόγοι", "υδραυλικοί", "ψυκτικοί", "αγγελίες εργασίας", "τεχνικά επαγγέλματα", "Ελλάδα"],
+  authors: [{ name: "TexnikesDouleies.gr" }],
+  creator: "TexnikesDouleies.gr",
+  publisher: "TexnikesDouleies.gr",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    title: "TexnikesDouleies.gr | Τεχνικές Θέσεις Εργασίας στην Ελλάδα",
+    description: "Η εξειδικευμένη πλατφόρμα εύρεσης εργασίας για τεχνικά επαγγέλματα στην Ελλάδα. Βρείτε θέσεις για ηλεκτρολόγους, υδραυλικούς, ψυκτικούς και άλλες ειδικότητες.",
+    url: "https://texnikesdouleies.gr",
+    siteName: "TexnikesDouleies.gr",
+    locale: "el_GR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TexnikesDouleies.gr | Τεχνικές Θέσεις Εργασίας στην Ελλάδα",
+    description: "Βρείτε τεχνική εργασία στην Ελλάδα εύκολα και γρήγορα.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
 
 export default function RootLayout({

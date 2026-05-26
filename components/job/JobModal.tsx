@@ -1,5 +1,6 @@
 "use client";
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 
 import { Job } from "@/types/job";
 
@@ -44,9 +45,6 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
   };
 
   const getResponseRateLabel = (rate?: number) => {
-    if (rate === undefined || rate === 0) return "Ενεργός εργοδότης";
-    if (rate >= 90) return "Συνήθως απαντά πολύ γρήγορα";
-    if (rate >= 60) return "Συνήθως απαντά γρήγορα";
     return "Ενεργός εργοδότης";
   };
 

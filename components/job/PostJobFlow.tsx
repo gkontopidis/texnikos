@@ -61,9 +61,16 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
         setStep("success");
         onJobCreated();
       } else {
-        showToast("Υπήρξε κάποιο πρόβλημα κατά τη δημοσίευση.", "error");
+        const errorData = await response.json().catch(() => ({ message: "Unknown error" }));
+        console.error("Job Creation Failed:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
+        });
+        showToast(errorData.message || "Υπήρξε κάποιο πρόβλημα κατά τη δημοσίευση.", "error");
       }
     } catch (error) {
+      console.error("Fetch Error:", error);
       showToast("Σφάλμα σύνδεσης. Προσπάθησε ξανά.", "error");
     } finally {
       setLoading(false);
@@ -164,7 +171,7 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
               </div>
               {formData.duration.type === "fixed" && (
                 <div className="flex gap-3 pt-2">
-                  <input type="number" min="1" max="12" value={formData.duration.amount} onChange={(e) => setFormData({ ...formData, duration: { ...formData.duration, amount: parseInt(e.target.value) } })} className="w-24 rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none focus:ring-2 focus:ring-slate-100" />
+                  <input type="number" min="1" max="72" value={formData.duration.amount} onChange={(e) => setFormData({ ...formData, duration: { ...formData.duration, amount: parseInt(e.target.value) } })} className="w-24 rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none focus:ring-2 focus:ring-slate-100" />
                   <select value={formData.duration.unit} onChange={(e) => setFormData({ ...formData, duration: { ...formData.duration, unit: e.target.value } })} className="flex-1 rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none focus:ring-2 focus:ring-slate-100">
                     <option value="days">Ημέρες</option><option value="months">Μήνες</option><option value="years">Έτη</option>
                   </select>

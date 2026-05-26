@@ -19,11 +19,9 @@ export default async function handler(
     if (action === "approve") {
       const job = await Job.findById(jobId);
       if (!job) return res.status(404).json({ message: "Job not found" });
-
-      const isFuturePublish = new Date(job.publishAt) > new Date();
       
       await Job.findByIdAndUpdate(jobId, {
-        status: isFuturePublish ? "scheduled" : "active",
+        status: "active",
         moderationNotes: notes
       });
     } else {

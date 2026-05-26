@@ -35,7 +35,7 @@ export default async function handler(
     }
 
     // Basic status validation
-    if (filteredUpdateData.status && !["pending", "active", "closed", "expired", "rejected", "scheduled"].includes(filteredUpdateData.status)) {
+    if (filteredUpdateData.status && !["active", "closed", "expired", "rejected", "scheduled", "pending-verification"].includes(filteredUpdateData.status)) {
         return res.status(400).json({ success: false, message: "Invalid status value" });
     }
 

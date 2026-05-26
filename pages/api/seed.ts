@@ -46,7 +46,7 @@ export default async function handler(
         expiresAt,
       },
       {
-        title: "Ψυκτικός / κλιματισμός",
+        title: "Ψυκτικός / Κλιματισμός",
         company: "CoolTech",
         location: "Αθήνα",
         salary: "1500€ - 2100€",
@@ -60,7 +60,7 @@ export default async function handler(
         expiresAt,
       },
       {
-        title: "Χτίστης / μπετατζής",
+        title: "Χτίστης / Μπετατζής",
         company: "BuildMasters",
         location: "Πάτρα",
         salary: "1400€ - 1800€",
@@ -74,7 +74,7 @@ export default async function handler(
         expiresAt,
       },
       {
-        title: "Σοβατζής / επιχριστής",
+        title: "Σοβατζής / Επιχριστής",
         company: "ProFinish",
         location: "Θεσσαλονίκη",
         salary: "1300€ - 1700€",
@@ -88,7 +88,7 @@ export default async function handler(
         expiresAt,
       },
       {
-        title: "Τεχνίτης σιδήρου / κολλητής",
+        title: "Τεχνίτης σιδήρου / Κολλητής",
         company: "MetalWorks",
         location: "Αθήνα",
         salary: "1600€ - 2200€",
@@ -102,7 +102,7 @@ export default async function handler(
         expiresAt,
       },
       {
-        title: "Χειριστής κλαρκ / περονοφόρου",
+        title: "Χειριστής κλαρκ / Περονοφόρου",
         company: "LogiMove",
         location: "Αθήνα",
         salary: "1200€ - 1500€",
@@ -116,7 +116,7 @@ export default async function handler(
         expiresAt,
       },
       {
-        title: "Χειριστής γερανού / μηχανημάτων",
+        title: "Χειριστής γερανού / Μηχανημάτων",
         company: "MegaCrane",
         location: "Θεσσαλονίκη",
         salary: "1700€ - 2300€",
@@ -130,7 +130,7 @@ export default async function handler(
         expiresAt,
       },
       {
-        title: "Κατασκευαστής ξυλουργικών / ξυλουργός",
+        title: "Κατασκευαστής ξυλουργικών / Ξυλουργός",
         company: "WoodCraft",
         location: "Ηράκλειο",
         salary: "1300€ - 1750€",
@@ -144,7 +144,7 @@ export default async function handler(
         expiresAt,
       },
       {
-        title: "Συντηρητής οικοδομών / τεχνίτης κτιρίων",
+        title: "Συντηρητής οικοδομών / Τεχνίτης κτιρίων",
         company: "BuildCare",
         location: "Πειραιάς",
         salary: "1500€ - 1900€",

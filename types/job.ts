@@ -11,7 +11,7 @@ export type Job = {
   contactPhone?: string;
   responseRate?: number;
   createdAt?: string;
-  status?: "pending" | "active" | "rejected" | "scheduled" | "expired";
+  status?: "active" | "rejected" | "scheduled" | "expired" | "closed" | "pending-verification";
   plan?: "free" | "featured" | "urgent";
   featuredUntil?: string;
   publishAt?: string;
