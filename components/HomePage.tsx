@@ -103,8 +103,8 @@ function HomeContent() {
 
       <main className="max-w-6xl mx-auto px-6 py-12">
         <div className="mb-12">
-          <h2 className="text-4xl font-black text-slate-900 mb-4">Βρες την επόμενη τεχνική δουλειά σου</h2>
-          <p className="text-lg text-slate-600">Η νούμερο 1 πλατφόρμα για τεχνίτες στην Ελλάδα. Εξειδίκευση, αξιοπιστία, άμεση επικοινωνία.</p>
+          <h2 className="text-4xl font-black text-slate-900 mb-4">Δουλειές για ηλεκτρολόγους, ψυκτικούς, υδραυλικούς και τεχνικά επαγγέλματα</h2>
+          <p className="text-lg text-slate-600">Νέες αγγελίες καθημερινά από όλη την Ελλάδα.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
