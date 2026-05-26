@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import Clarity from "@/components/Clarity";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -61,6 +62,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         <Analytics />
+        {process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID && (
+          <Clarity projectId={process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID} />
+        )}
       </body>
     </html>
   );
