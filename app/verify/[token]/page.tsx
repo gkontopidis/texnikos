@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, use } from "react";
+import { useRouter } from "next/navigation";
 
-export default function VerifyPage() {
-  const { token } = useParams();
+export default function VerifyPage({ params }: { params: Promise<{ token: string }> }) {
+  const resolvedParams = use(params);
+  const { token } = resolvedParams;
   const router = useRouter();
   const [status, setStatus] = useState("Επαλήθευση...");
 
