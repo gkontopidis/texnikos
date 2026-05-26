@@ -104,14 +104,20 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
             </button>
             <button onClick={() => handlePlanSelect("featured")} className="w-full flex items-center justify-between rounded-[24px] border-2 border-emerald-100 bg-emerald-50/30 p-5 text-left transition hover:border-emerald-200 hover:bg-emerald-50/50">
               <div>
-                <div className="font-bold text-emerald-900">Προβεβλημένη Αγγελία ⭐</div>
+                <div className="flex items-center gap-2">
+                  <div className="font-bold text-emerald-900">Προβεβλημένη Αγγελία ⭐</div>
+                  <span className="rounded-full bg-emerald-200 px-2 py-0.5 text-[10px] font-black uppercase text-emerald-800">Beta</span>
+                </div>
                 <div className="text-sm text-emerald-700/70">Άμεση έγκριση & εμφάνιση πάνω από τις δωρεάν.</div>
               </div>
               <div className="text-xl font-bold">€49</div>
             </button>
             <button onClick={() => handlePlanSelect("urgent")} className="w-full flex items-center justify-between rounded-[24px] border-2 border-amber-100 bg-amber-50/30 p-5 text-left transition hover:border-amber-200 hover:bg-amber-50/50">
               <div>
-                <div className="font-bold text-amber-900">Επείγουσα Αγγελία ⚡</div>
+                <div className="flex items-center gap-2">
+                  <div className="font-bold text-amber-900">Επείγουσα Αγγελία ⚡</div>
+                  <span className="rounded-full bg-amber-200 px-2 py-0.5 text-[10px] font-black uppercase text-amber-900">Beta</span>
+                </div>
                 <div className="text-sm text-amber-700/70">Εμφάνιση πάνω από τις προβεβλημένες με σήμανση.</div>
               </div>
               <div className="text-xl font-bold text-amber-900">€99</div>

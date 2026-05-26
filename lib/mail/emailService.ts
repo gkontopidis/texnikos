@@ -2,10 +2,12 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+const FROM_EMAIL = "TexnikesDouleies <noreply@texnikesdouleies.gr>";
+
 export const sendApplicationNotificationEmail = async (employerEmail: string, applicantName: string, applicantPhone: string, jobTitle: string) => {
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: FROM_EMAIL,
       to: employerEmail,
       subject: `Νέα αίτηση για την αγγελία: ${jobTitle}`,
       html: `
@@ -27,7 +29,7 @@ export const sendVerificationEmail = async (email: string, manageToken: string, 
   const verifyUrl = `${BASE_URL}/verify/${manageToken}`;
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: FROM_EMAIL,
       to: email,
       subject: `Επιβεβαίωση αγγελίας: ${jobTitle}`,
       html: `
@@ -46,7 +48,7 @@ export const sendJobPostedEmail = async (email: string, manageToken: string, job
   
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: FROM_EMAIL,
       to: email,
       subject: `Η αγγελία σας δημοσιεύτηκε: ${jobTitle}`,
       html: `
@@ -69,7 +71,7 @@ export const sendJobActivatedEmail = async (email: string, manageToken: string, 
 
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: FROM_EMAIL,
       to: email,
       subject: `Η αγγελία σας είναι πλέον LIVE: ${jobTitle}`,
       html: `
@@ -94,7 +96,7 @@ export const sendExpirationReminderEmail = async (email: string, manageToken: st
   
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: FROM_EMAIL,
       to: email,
       subject: `Η αγγελία σας λήγει σε 3 ημέρες: ${jobTitle}`,
       html: `
