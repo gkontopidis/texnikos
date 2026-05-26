@@ -254,12 +254,11 @@ export default function AdminPage() {
               <div>
                 <label className="block text-sm font-bold mb-2">Status</label>
                 <select 
-                  className="w-full px-4 py-2.5 border rounded-xl bg-slate-50 focus:bg-white transition font-bold"
-                  value={editingJob.status} 
-                  onChange={(e) => setEditingJob({...editingJob, status: e.target.value})}
+                className="w-full px-4 py-2.5 border rounded-xl bg-slate-50 focus:bg-white transition font-bold"
+                value={editingJob.status} 
+                onChange={(e) => setEditingJob({...editingJob, status: e.target.value as "pending-verification" | "scheduled" | "active" | "closed" | "expired" | "rejected"})}
                 >
-                  <option value="pending-verification">Προς Επιβεβαίωση</option>
-                  <option value="scheduled">Προγραμματισμένη</option>
+                <option value="pending-verification">Προς Επιβεβαίωση</option>                  <option value="scheduled">Προγραμματισμένη</option>
                   <option value="active">Ενεργή</option>
                   <option value="rejected">Απορρίφθηκε</option>
                   <option value="closed">Κλειστή</option>
