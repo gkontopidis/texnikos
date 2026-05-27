@@ -321,7 +321,7 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
               <div className="text-4xl font-black text-slate-900">{selectedPlan === "featured" ? "€49" : "€99"}</div>
             </div>
             <p className="text-slate-600">Η online πληρωμή θα ολοκληρωθεί στο επόμενο βήμα.</p>
-            <button onClick={submitJob} disabled={loading} className="w-full rounded-2xl bg-emerald-600 py-4 font-bold text-white hover:bg-emerald-700 transition disabled:opacity-50">
+            <button onClick={() => submitJob()} disabled={loading} className="w-full rounded-2xl bg-emerald-600 py-4 font-bold text-white hover:bg-emerald-700 transition disabled:opacity-50">
               {loading ? "Επεξεργασία..." : "Πληρωμή & Δημοσίευση"}
             </button>
           </div>

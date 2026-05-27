@@ -1,14 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import JobCard from "@/components/job/JobCard";
 import JobModal from "@/components/job/JobModal";
 import { Job } from "@/types/job";
 import { Company } from "@/types/company";
 
-export default function CompanyProfile() {
-  const { slug } = useParams();
+export default function CompanyProfile({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = use(params);
+  const slug = resolvedParams.slug;
   const [data, setData] = useState<{ company: Company; jobs: Job[] } | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
