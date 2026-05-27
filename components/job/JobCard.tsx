@@ -56,7 +56,17 @@ export default function JobCard({ job, isSaved, onSave, onViewDetails }: JobCard
 
           <div className="flex flex-row flex-nowrap items-center gap-x-3 text-slate-500 mb-4 text-[10px] sm:text-xs overflow-hidden min-w-0">
             <span className="whitespace-nowrap shrink-0">📍 {job.location}</span>
-            <span className="whitespace-nowrap shrink-0 truncate max-w-[80px]">🏢 {job.company}</span>
+            {job.companyId && typeof job.companyId === 'object' && job.companyId.slug ? (
+              <a 
+                href={`/companies/${job.companyId.slug}`} 
+                onClick={(e) => e.stopPropagation()}
+                className="whitespace-nowrap shrink-0 truncate max-w-[120px] font-bold text-indigo-600 hover:underline"
+              >
+                🏢 {job.company}
+              </a>
+            ) : (
+              <span className="whitespace-nowrap shrink-0 truncate max-w-[120px]">🏢 {job.company}</span>
+            )}
             <span className="flex items-center gap-1 whitespace-nowrap shrink-0 overflow-hidden text-ellipsis">
               💰 {job.salary ?? "Κατόπιν συμφωνίας"}
             </span>

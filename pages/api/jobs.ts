@@ -56,7 +56,7 @@ export default async function handler(
           ]
         }
       ]
-    }).sort({ urgent: -1, featured: -1, createdAt: -1 });
+    }).populate("companyId", "slug").sort({ urgent: -1, featured: -1, createdAt: -1 });
 
     // NEW: Get counts for statistics
     const activeJobCount = await Job.countDocuments({ status: "active" });

@@ -1,9 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
+import Company from "@/models/Company";
 import AlertSubscription from "@/models/AlertSubscription";
 import { sendJobPostedEmail, sendVerificationEmail } from "@/lib/mail/emailService";
 import { sendJobAlertEmail } from "@/lib/mail/alertService";
+import { generateSlug } from "@/lib/slug";
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,11 +19,13 @@ export default async function handler(
     await connectDB();
 
     const {
-      title, company, location, salary, duration, description, 
+      title, company: companyName, location, salary, duration, description, 
       contactEmail, contactPhone, fullTime, urgent, featured, 
-      plan, isPaid, honeypot // Added honeypot
+      plan, isPaid, createCompanyProfile, updateProfile, 
+      originalCompanyEmail, companyId: providedCompanyId, honeypot 
     } = req.body;
 
+    // ... (rest of validation)
     // 1. Honeypot check
     if (honeypot) {
         return res.status(400).json({ success: false, message: "Spam detected." });
@@ -34,7 +38,7 @@ export default async function handler(
         return res.status(400).json({ success: false, message: "Email domain not allowed." });
     }
 
-    // 3. Duplicate detection (same email posting in last 15 mins)
+    // 3. Duplicate detection
     const recentJob = await Job.findOne({ 
         contactEmail, 
         createdAt: { $gte: new Date(Date.now() - 15 * 60 * 1000) } 
@@ -43,10 +47,72 @@ export default async function handler(
         return res.status(429).json({ success: false, message: "Πρέπει να περιμένετε 15 λεπτά πριν δημοσιεύσετε ξανά." });
     }
 
-    // Validate required fields
-    if (!title || !company || !location || !contactEmail) {
+    if (!title || !companyName || !location || !contactEmail) {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
+
+    // --- COMPANY LOGIC ---
+    let companyId = null;
+    let existingCompany = null;
+    
+    if (createCompanyProfile) {
+      // Lookup by provided ID or original email if we are updating
+      if (providedCompanyId) {
+        existingCompany = await Company.findById(providedCompanyId);
+      } else if (originalCompanyEmail) {
+        existingCompany = await Company.findOne({ contactEmail: originalCompanyEmail });
+      } else {
+        existingCompany = await Company.findOne({ contactEmail });
+      }
+      
+      if (!existingCompany) {
+        // Create a new company profile automatically
+        let slug = generateSlug(companyName);
+        
+        // Ensure unique slug
+        let slugExists = await Company.findOne({ slug });
+        if (slugExists) {
+          slug = `${slug}-${Math.floor(Math.random() * 1000)}`;
+        }
+
+        existingCompany = new Company({
+          name: companyName,
+          slug,
+          contactEmail,
+          location,
+          phone: contactPhone,
+          verified: false 
+        });
+        await existingCompany.save();
+      } else if (updateProfile) {
+        // Update existing profile with new details
+        existingCompany.name = companyName;
+        existingCompany.location = location;
+        existingCompany.phone = contactPhone;
+        
+        // Handle email change - ensure new email is not taken by another company
+        if (contactEmail !== existingCompany.contactEmail) {
+            const emailTaken = await Company.findOne({ contactEmail, _id: { $ne: existingCompany._id } });
+            if (emailTaken) {
+                return res.status(400).json({ success: false, message: "Το νέο email χρησιμοποιείται ήδη από άλλη επιχείρηση." });
+            }
+            existingCompany.contactEmail = contactEmail;
+        }
+
+        // Update slug if name changed
+        let newSlug = generateSlug(companyName);
+        if (newSlug !== existingCompany.slug) {
+          let slugExists = await Company.findOne({ slug: newSlug });
+          if (slugExists) {
+            newSlug = `${newSlug}-${Math.floor(Math.random() * 1000)}`;
+          }
+          existingCompany.slug = newSlug;
+        }
+        await existingCompany.save();
+      }
+      companyId = existingCompany._id;
+    }
+    // ---------------------
 
     const now = new Date();
 
@@ -54,14 +120,16 @@ export default async function handler(
     const existingJob = await Job.findOne({ contactEmail, emailVerified: true });
     const isVerified = !!existingJob;
 
-    // Calculate publish date: 72 hours delay for free plan
+    // ... (rest of job creation)
     const publishAt = plan === "free" 
       ? new Date(now.getTime() + 72 * 60 * 60 * 1000) 
       : now;
 
-    // Strict field whitelisting for security
     const jobData = {
-      title, company, location, salary, duration, description, 
+      title, 
+      company: companyName, 
+      companyId, // Link to company (null if createCompanyProfile is false)
+      location, salary, duration, description, 
       contactEmail, contactPhone,
       fullTime: !!fullTime,
       urgent: !!urgent,
@@ -82,7 +150,12 @@ export default async function handler(
     const newJob = new Job(jobData);
     await newJob.save();
 
-    // Fire-and-forget: Do not await these to prevent blocking the response
+    // Update company verification status if job is verified
+    if (isVerified && existingCompany && !existingCompany.verified) {
+      await Company.updateOne({ _id: companyId }, { verified: true });
+    }
+
+    // ... (rest of handlers)
     (async () => {
       try {
         if (isVerified) {
@@ -92,7 +165,6 @@ export default async function handler(
         }
 
         if (newJob.status === "active") {
-          // Notify matching job alert subscribers
           const subscribers = await AlertSubscription.find({ 
             specialty: newJob.title, 
             location: newJob.location,
@@ -114,9 +186,6 @@ export default async function handler(
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    return res.status(500).json({ success: false, message: "Internal server error" });
   }
 }

@@ -4,6 +4,7 @@ import crypto from "crypto";
 const JobSchema = new mongoose.Schema({
   title: String,
   company: String,
+  companyId: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
   location: String,
   salary: String,
   duration: {

@@ -7,6 +7,7 @@ export type Job = {
   salaryMax?: number;
   salaryText?: string;
   company: string;
+  companyId?: string | { _id: string; slug: string };
   urgent: boolean;
   fullTime?: boolean;
   featured?: boolean;

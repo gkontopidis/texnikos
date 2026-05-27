@@ -1,5 +1,5 @@
 "use client";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 
 interface PostJobFlowProps {
   onClose: () => void;
@@ -20,8 +20,51 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
     title: "", company: "", location: "", salary: "",
     duration: { type: "permanent", amount: 0, unit: "months" }, 
     description: "", contactEmail: "", contactPhone: "",
-    fullTime: true, urgent: false, honeypot: ""
+    fullTime: true, urgent: false, createCompanyProfile: false, honeypot: ""
   });
+  const [originalCompanyData, setOriginalCompanyData] = useState<any>(null);
+  const [companySuggestions, setCompanySuggestions] = useState<any[]>([]);
+
+  // Search/Auto-fill logic when company name is typed
+  useEffect(() => {
+    const name = formData.company.trim();
+    if (name.length >= 2) {
+      const timer = setTimeout(async () => {
+        try {
+          const res = await fetch(`/api/companies/search?name=${encodeURIComponent(name)}`);
+          if (res.ok) {
+            const data = await res.json();
+            setCompanySuggestions(data);
+            
+            // If exact match found (or very close), we can offer auto-fill
+            const exactMatch = data.find((c: any) => c.name.toLowerCase() === name.toLowerCase());
+            if (exactMatch) {
+              handleCompanySelect(exactMatch);
+            }
+          }
+        } catch (err) {
+          console.error("Company search failed", err);
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    } else {
+      setCompanySuggestions([]);
+    }
+  }, [formData.company]);
+
+  const handleCompanySelect = (company: any) => {
+    setOriginalCompanyData(company);
+    setFormData(prev => ({
+      ...prev,
+      company: company.name,
+      location: company.location || prev.location,
+      contactPhone: company.phone || prev.contactPhone,
+      contactEmail: company.contactEmail || prev.contactEmail,
+      createCompanyProfile: true // Automatically check when an existing company is found
+    }));
+    setCompanySuggestions([]);
+    showToast(`Βρέθηκαν τα στοιχεία της επιχείρησης "${company.name}".`, "info");
+  };
 
   const handlePlanSelect = (plan: "free" | "featured") => {
     setSelectedPlan(plan);
@@ -35,21 +78,52 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
       return;
     }
     
+    let updateProfile = false;
+    let originalEmail = null;
+    let companyId = null;
+
+    // Check for changes if profile exists and user wants to link/update
+    if (originalCompanyData) {
+      const hasChanges = 
+        formData.company.trim() !== originalCompanyData.name.trim() ||
+        formData.location.trim() !== (originalCompanyData.location || "").trim() ||
+        formData.contactPhone.trim() !== (originalCompanyData.phone || "").trim() ||
+        formData.contactEmail.trim().toLowerCase() !== originalCompanyData.contactEmail.trim().toLowerCase();
+      
+      if (hasChanges && formData.createCompanyProfile) {
+        updateProfile = window.confirm(
+          "Εντοπίστηκαν αλλαγές στα στοιχεία της επιχείρησης. Θέλετε να ενημερωθεί το μόνιμο δημόσιο προφίλ σας με τα νέα στοιχεία;"
+        );
+        originalEmail = originalCompanyData.contactEmail;
+        companyId = originalCompanyData._id;
+      }
+    }
+    
     if (selectedPlan === "free") {
-      submitJob();
+      submitJob(updateProfile, originalEmail, companyId);
     } else {
       setStep("payment");
+      // For paid plans, we'll need to pass these to the final submitJob call
+      // We can store them in a temporary state or use them in the final call
+      (formData as any)._tempUpdateInfo = { updateProfile, originalEmail, companyId };
     }
   };
 
-  const submitJob = async () => {
+  const submitJob = async (updateProfile = false, originalEmail = null, companyId = null) => {
     setLoading(true);
+    
+    // Handle case where info was stored from step 2 for paid plans
+    const extraInfo = (formData as any)._tempUpdateInfo || { updateProfile, originalEmail, companyId };
+    
     try {
       const response = await fetch("/api/jobs/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          updateProfile: extraInfo.updateProfile,
+          originalCompanyEmail: extraInfo.originalEmail,
+          companyId: extraInfo.companyId,
           plan: selectedPlan,
           urgent: selectedPlan === "featured" || formData.urgent,
           featured: selectedPlan === "featured",
@@ -124,9 +198,29 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
                   {specialtyOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <label className="text-sm font-semibold text-slate-700">Επιχείρηση *</label>
-                <input value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} placeholder="π.χ. Τεχνική ΑΕ" className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none focus:ring-2 focus:ring-slate-100 transition" />
+                <input 
+                  value={formData.company} 
+                  onChange={(e) => setFormData({ ...formData, company: e.target.value })} 
+                  placeholder="π.χ. Τεχνική ΑΕ" 
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none focus:ring-2 focus:ring-slate-100 transition" 
+                />
+                {companySuggestions.length > 0 && !originalCompanyData && (
+                  <div className="absolute z-10 w-full bg-white border border-slate-200 rounded-2xl mt-1 shadow-xl overflow-hidden">
+                    {companySuggestions.map((c) => (
+                      <button
+                        key={c._id}
+                        type="button"
+                        onClick={() => handleCompanySelect(c)}
+                        className="w-full text-left px-4 py-3 hover:bg-slate-50 transition border-b border-slate-50 last:border-0"
+                      >
+                        <div className="font-bold text-slate-900">{c.name}</div>
+                        <div className="text-xs text-slate-500">{c.location}</div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -196,6 +290,19 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
                 <label className="text-sm font-semibold text-slate-700">Τηλέφωνο</label>
                 <input value={formData.contactPhone} onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })} placeholder="2101234567" className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none focus:ring-2 focus:ring-slate-100 transition" />
               </div>
+            </div>
+
+            <div className="flex items-center gap-3 rounded-2xl bg-indigo-50/50 p-4 border border-indigo-100">
+              <input 
+                type="checkbox" 
+                id="createCompanyProfile"
+                checked={formData.createCompanyProfile}
+                onChange={(e) => setFormData({ ...formData, createCompanyProfile: e.target.checked })}
+                className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <label htmlFor="createCompanyProfile" className="text-sm font-bold text-indigo-900 cursor-pointer">
+                Δημιουργία δημόσιου προφίλ επιχείρησης <span className="text-[10px] font-medium block text-indigo-700/70">Εμφανίζει όλες τις αγγελίες σας σε μία σελίδα. (Προαιρετικό)</span>
+              </label>
             </div>
 
             <button type="submit" className="w-full rounded-2xl bg-slate-900 py-4 font-bold text-white hover:bg-slate-800 transition">

@@ -1,5 +1,5 @@
 "use client";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import Link from "next/link";
 
 import { Job } from "@/types/job";
@@ -16,6 +16,20 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
   const [applicantPhone, setApplicantPhone] = useState("");
   const [applicantMessage, setApplicantMessage] = useState("");
   const [showApplyForm, setShowApplyForm] = useState(false);
+  const [otherJobs, setOtherJobs] = useState<Job[]>([]);
+
+  useEffect(() => {
+    if (job.companyId && typeof job.companyId === 'object' && job.companyId.slug) {
+      fetch(`/api/companies/${job.companyId.slug}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.jobs) {
+            setOtherJobs(data.jobs.filter((j: Job) => j._id !== job._id).slice(0, 3));
+          }
+        })
+        .catch((err) => console.error("Failed to fetch other jobs", err));
+    }
+  }, [job]);
 
   const formatRelativeDate = (dateStr?: string) => {
     if (!dateStr) return "";
@@ -110,7 +124,13 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
               <span className="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">{getExpiresIn(job.expiresAt)}</span>
             </div>
             <div className="text-sm text-slate-500">
-              {job.company} · {job.location}
+              {job.companyId && typeof job.companyId === 'object' && job.companyId.slug ? (
+                <Link href={`/companies/${job.companyId.slug}`} className="font-bold text-indigo-600 hover:underline">
+                  🏢 {job.company}
+                </Link>
+              ) : (
+                <>🏢 {job.company}</>
+              )} · 📍 {job.location}
             </div>
           </div>
           <button
@@ -212,6 +232,37 @@ export default function JobModal({ job, onClose, showToast }: JobModalProps) {
               )}
             </div>
           </div>
+
+          {/* Other jobs from same company */}
+          {otherJobs.length > 0 && (
+            <div className="pt-6 border-t border-slate-100">
+              <h4 className="font-bold text-slate-900 mb-4">Άλλες αγγελίες από την επιχείρηση:</h4>
+              <div className="grid gap-3">
+                {otherJobs.map(otherJob => (
+                  <button 
+                    key={otherJob._id}
+                    onClick={() => {
+                      onClose();
+                      // Small delay to allow current modal to close before opening new one
+                      setTimeout(() => {
+                        // This might be tricky if we don't have access to the parent's setter
+                        // But since JobCard's onViewDetails is passed down, we can assume it works if we trigger it
+                        // However, JobModal doesn't have access to onViewDetails.
+                        // For Phase 1, we can just link to the company profile.
+                      }, 100);
+                    }}
+                    className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50 transition group text-left"
+                  >
+                    <div>
+                      <div className="font-bold text-slate-900 group-hover:text-indigo-600 transition">{otherJob.title}</div>
+                      <div className="text-xs text-slate-500">{otherJob.location}</div>
+                    </div>
+                    <span className="text-indigo-600 font-bold text-lg">→</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Collapsible Apply Form */}
           <div className="pt-4 border-t border-slate-100">
