@@ -93,6 +93,7 @@ function HomeContent() {
           <Link href="/" className="text-xl font-bold tracking-tight">TexnikesDouleies.gr</Link>
           
           <div className="flex items-center gap-4">
+            <Link href="/how-it-works" className="hidden md:block text-sm font-semibold text-slate-600 hover:text-indigo-600">Πώς λειτουργεί</Link>
             <Link href="/employers" className="hidden md:block text-sm font-semibold text-slate-600 hover:text-indigo-600">Για Εργοδότες</Link>
             <button onClick={() => setShowPostJobModal(true)} className="rounded-2xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white">Δημοσίευση</button>
             <button className="md:hidden text-2xl" onClick={() => setIsMenuOpen(!isMenuOpen)}>☰</button>
@@ -101,6 +102,7 @@ function HomeContent() {
         
         {isMenuOpen && (
           <nav className="md:hidden bg-white border-t border-slate-100 px-6 py-4 flex flex-col gap-4 text-sm font-semibold text-slate-600">
+            <Link href="/how-it-works" onClick={() => setIsMenuOpen(false)}>Πώς λειτουργεί</Link>
             <Link href="/employers" onClick={() => setIsMenuOpen(false)}>Για Εργοδότες</Link>
             <Link href="/terms" onClick={() => setIsMenuOpen(false)}>Όροι Χρήσης</Link>
             <Link href="/gdpr" onClick={() => setIsMenuOpen(false)}>Πολιτική Απορρήτου</Link>
@@ -111,7 +113,13 @@ function HomeContent() {
       <main className="max-w-6xl mx-auto px-6 py-12">
         <div className="mb-12">
           <h2 className="text-4xl font-black text-slate-900 mb-4">Δουλειές για ηλεκτρολόγους, ψυκτικούς, υδραυλικούς και τεχνικά επαγγέλματα</h2>
-          <p className="text-lg text-slate-600">Νέες αγγελίες καθημερινά από όλη την Ελλάδα.</p>
+          <div className="flex flex-col gap-1">
+            <p className="text-lg text-slate-600">Νέες αγγελίες καθημερινά από όλη την Ελλάδα.</p>
+            <p className="text-sm font-bold text-indigo-600 flex items-center gap-1.5">
+              <span className="flex h-2 w-2 rounded-full bg-indigo-600"></span>
+              χωρίς εγγραφές και χρονοβόρες διαδικασίες
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -164,6 +172,7 @@ function HomeContent() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
           <div>© 2026 TexnikesDouleies.gr</div>
           <div className="flex flex-wrap gap-6 justify-center">
+            <Link href="/how-it-works" className="hover:text-indigo-600 transition">Πώς λειτουργεί</Link>
             <Link href="/terms" className="hover:text-indigo-600 transition">Όροι Χρήσης</Link>
             <Link href="/gdpr" className="hover:text-indigo-600 transition">Πολιτική Απορρήτου</Link>
             <Link href="/cookies" className="hover:text-indigo-600 transition">Πολιτική Cookies</Link>

@@ -65,6 +65,15 @@ export default function FAQPage() {
           ))}
         </div>
       </div>
+
+      <footer className="mt-20 py-12 text-center text-slate-400 text-sm border-t border-slate-200 flex flex-col items-center gap-4">
+        <div className="flex gap-6">
+          <Link href="/how-it-works" className="hover:text-indigo-600 transition">Πώς λειτουργεί</Link>
+          <Link href="/terms" className="hover:text-indigo-600 transition">Όροι Χρήσης</Link>
+          <Link href="/gdpr" className="hover:text-indigo-600 transition">Πολιτική Απορρήτου</Link>
+        </div>
+        <div>© 2026 TexnikesDouleies.gr · Όλα τα δικαιώματα προστατεύονται.</div>
+      </footer>
     </div>
   );
 }

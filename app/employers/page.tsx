@@ -57,8 +57,13 @@ export default function EmployersPackages() {
         </div>
       </main>
 
-      <footer className="py-12 text-center text-slate-400 text-sm">
-        © 2026 TexnikesDouleies.gr · Όλα τα δικαιώματα προστατεύονται.
+      <footer className="py-12 text-center text-slate-400 text-sm flex flex-col items-center gap-4">
+        <div className="flex gap-6">
+          <Link href="/how-it-works" className="hover:text-indigo-600 transition">Πώς λειτουργεί</Link>
+          <Link href="/faq" className="hover:text-indigo-600 transition">FAQ</Link>
+          <Link href="/terms" className="hover:text-indigo-600 transition">Όροι Χρήσης</Link>
+        </div>
+        <div>© 2026 TexnikesDouleies.gr · Όλα τα δικαιώματα προστατεύονται.</div>
       </footer>
     </div>
   );
