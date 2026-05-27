@@ -58,7 +58,22 @@ export default async function handler(
       ]
     }).sort({ urgent: -1, featured: -1, createdAt: -1 });
 
-    return res.status(200).json(jobs);
+    // NEW: Get counts for statistics
+    const activeJobCount = await Job.countDocuments({ status: "active" });
+    const closedJobCount = await Job.countDocuments({ status: "closed" });
+    
+    // Count unique emails in AlertSubscription as "technicians"
+    const AlertSubscription = (await import("@/models/AlertSubscription")).default;
+    const technicianCount = (await AlertSubscription.distinct("email", { unsubscribed: false })).length;
+
+    return res.status(200).json({
+      jobs,
+      stats: {
+        active: activeJobCount,
+        closed: closedJobCount,
+        technicians: technicianCount
+      }
+    });
   } catch (error) {
     console.error(error);
 

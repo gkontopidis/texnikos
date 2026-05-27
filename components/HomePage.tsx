@@ -31,6 +31,7 @@ function HomeContent() {
   const plan = searchParams ? searchParams.get("plan") as "free" | "featured" | "urgent" | null : null;
 
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [stats, setStats] = useState({ active: 0, closed: 0, technicians: 0 });
   const [savedJobs, setSavedJobs] = useState<string[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [showPostJobModal, setShowPostJobModal] = useState(showPostJob);
@@ -47,7 +48,14 @@ function HomeContent() {
   const fetchJobs = () => {
     fetch("/api/jobs")
       .then((res) => res.json())
-      .then((data) => setJobs(Array.isArray(data) ? data : []));
+      .then((data) => {
+        if (data.jobs) {
+          setJobs(data.jobs);
+          setStats(data.stats);
+        } else {
+          setJobs(Array.isArray(data) ? data : []);
+        }
+      });
   };
 
   useEffect(() => {
@@ -75,8 +83,6 @@ function HomeContent() {
     }
     return result;
   }, [jobs, filters, showSavedOnly, savedJobs]);
-  const activeJobCount = jobs.filter(j => j.status === 'active').length;
-  const closedJobCount = jobs.filter(j => j.status === 'closed').length;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -126,14 +132,18 @@ function HomeContent() {
           <div className="md:col-span-2 bg-white rounded-[32px] border border-slate-200 p-8 shadow-sm">
              <AlertBox specialtyOptions={specialtyOptions} locationOptions={locationOptions} showToast={showToast} />
           </div>
-          <div className="md:col-span-1 grid grid-rows-2 gap-6">
-            <div className="bg-white rounded-[32px] border border-slate-200 p-8 shadow-sm flex flex-col items-center justify-center">
-                <div className="text-5xl font-black text-indigo-600">{activeJobCount}</div>
-                <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Ενεργές Αγγελίες</div>
+          <div className="md:col-span-1 grid grid-cols-1 gap-6">
+            <div className="bg-white rounded-[32px] border border-slate-200 p-6 shadow-sm flex items-center gap-6">
+                <div className="text-4xl font-black text-indigo-600">{stats.active}</div>
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">Ενεργές<br/>Αγγελίες</div>
             </div>
-            <div className="bg-white rounded-[32px] border border-slate-200 p-8 shadow-sm flex flex-col items-center justify-center">
-                <div className="text-5xl font-black text-emerald-600">{closedJobCount}</div>
-                <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Βρήκαν Δουλειά</div>
+            <div className="bg-white rounded-[32px] border border-slate-200 p-6 shadow-sm flex items-center gap-6">
+                <div className="text-4xl font-black text-emerald-600">{stats.closed}</div>
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">Βρήκαν<br/>Δουλειά</div>
+            </div>
+            <div className="bg-white rounded-[32px] border border-slate-200 p-6 shadow-sm flex items-center gap-6">
+                <div className="text-4xl font-black text-amber-500">{stats.technicians}</div>
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">Εγγεγραμμένοι<br/>Τεχνικοί</div>
             </div>
           </div>
         </div>
