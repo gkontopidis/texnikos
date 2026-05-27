@@ -47,7 +47,7 @@ export default function AlertBox({ specialtyOptions, locationOptions, showToast 
     <div className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm">
       <div className="text-xl font-semibold mb-3 text-slate-900">🔔 Alerts Εργασίας</div>
       <p className="text-slate-600 mb-4">
-        Επίλεξε την ειδικότητα που θέλεις και λάβε ενημέρωση με email.
+        Επίλεξε την ειδικότητα που θέλεις και λάβε ενημέρωση με email με κάθε νέα αγγελία για την αντίστοιχη ειδικότητα
       </p>
 
       <div className="space-y-3">
