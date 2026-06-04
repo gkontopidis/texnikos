@@ -40,8 +40,9 @@ export async function connectDB() {
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false,
       dbName: "texnikos",
+      connectTimeoutMS: 10000, // 10 seconds timeout
+      socketTimeoutMS: 45000,  // Close sockets after 45 seconds of inactivity
     };
 
     console.log("MongoDB: Opening new connection...");

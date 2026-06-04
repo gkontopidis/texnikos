@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
+import Company from "@/models/Company"; // Ensure Company model is registered for populate
 import { sendExpirationReminderEmail } from "@/lib/mail/emailService";
 
 export default async function handler(
@@ -14,24 +15,32 @@ export default async function handler(
     const threeDaysFromNow = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
 
     // 1. Mark expired jobs (only if expiresAt exists and is in the past)
-    await Job.updateMany(
-      { 
-        expiresAt: { $exists: true, $ne: null, $lt: now }, 
-        status: { $ne: "expired" } 
-      },
-      { status: "expired" }
-    );
+    try {
+      await Job.updateMany(
+        { 
+          expiresAt: { $exists: true, $ne: null, $lt: now }, 
+          status: { $ne: "expired" } 
+        },
+        { status: "expired" }
+      );
+    } catch (e) {
+      console.error("Error updating expired jobs:", e);
+    }
 
     // 2. Send expiration reminders
-    const expiringJobs = await Job.find({
-      expiresAt: { $exists: true, $ne: null, $lt: threeDaysFromNow, $gt: now },
-      status: "active",
-      expirationNotified: false
-    });
+    try {
+      const expiringJobs = await Job.find({
+        expiresAt: { $exists: true, $ne: null, $lt: threeDaysFromNow, $gt: now },
+        status: "active",
+        expirationNotified: false
+      });
 
-    for (const job of expiringJobs) {
-      await sendExpirationReminderEmail(job.contactEmail, job.manageToken, job.title);
-      await Job.updateOne({ _id: job._id }, { expirationNotified: true });
+      for (const job of expiringJobs) {
+        await sendExpirationReminderEmail(job.contactEmail, job.manageToken, job.title);
+        await Job.updateOne({ _id: job._id }, { expirationNotified: true });
+      }
+    } catch (e) {
+      console.error("Error sending expiration reminders:", e);
     }
     
     // Logic: 
@@ -52,6 +61,7 @@ export default async function handler(
         {
           $or: [
             { expiresAt: { $exists: false } },
+            { expiresAt: null },
             { expiresAt: { $gt: now } }
           ]
         }
@@ -63,8 +73,13 @@ export default async function handler(
     const closedJobCount = await Job.countDocuments({ status: "closed" });
     
     // Count unique emails in AlertSubscription as "technicians"
-    const AlertSubscription = (await import("@/models/AlertSubscription")).default;
-    const technicianCount = (await AlertSubscription.distinct("email", { unsubscribed: false })).length;
+    let technicianCount = 0;
+    try {
+      const AlertSubscription = (await import("@/models/AlertSubscription")).default;
+      technicianCount = (await AlertSubscription.distinct("email", { unsubscribed: false })).length;
+    } catch (e) {
+      console.error("Error getting technician count:", e);
+    }
 
     return res.status(200).json({
       jobs,
@@ -74,11 +89,12 @@ export default async function handler(
         technicians: technicianCount
       }
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("API Jobs Error:", error);
 
     return res.status(500).json({
       success: false,
+      error: error.message || "Internal server error"
     });
   }
 }
