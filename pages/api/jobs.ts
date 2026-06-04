@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
-import Company from "@/models/Company"; // Ensure Company model is registered for populate
+import "@/models/Company"; // Side-effect import to ensure model registration
+import Company from "@/models/Company";
 import { sendExpirationReminderEmail } from "@/lib/mail/emailService";
 
 export default async function handler(

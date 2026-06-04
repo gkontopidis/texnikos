@@ -47,6 +47,12 @@ export async function connectDB() {
 
     console.log("MongoDB: Opening new connection...");
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      // Register all models to prevent MissingSchemaError during population
+      require("@/models/Job");
+      require("@/models/Company");
+      require("@/models/AlertSubscription");
+      require("@/models/Application");
+      require("@/models/AbuseReport");
       return mongoose;
     });
   }
