@@ -49,12 +49,16 @@ function HomeContent() {
     fetch("/api/jobs")
       .then((res) => res.json())
       .then((data) => {
+        console.log("Jobs API Response:", data);
         if (data.jobs) {
           setJobs(data.jobs);
           setStats(data.stats);
         } else {
           setJobs(Array.isArray(data) ? data : []);
         }
+      })
+      .catch(err => {
+        console.error("Jobs Fetch Error:", err);
       });
   };
 

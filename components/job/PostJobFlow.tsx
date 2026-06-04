@@ -74,7 +74,7 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.company || !formData.location || !formData.contactEmail) {
-      showToast("Παρακαλώ συμπλήρωσε όλα τα υποχρεωτικά πεδία (Ειδικότητα, Επιχείρηση, Περιοχή, Email).", "error");
+      showToast("Παρακαλώ συμπλήρωσε τα υποχρεωτικά πεδία: Ειδικότητα, Επιχείρηση, Περιοχή και Email.", "error");
       return;
     }
     
@@ -287,7 +287,7 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
                 <input type="email" value={formData.contactEmail} onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })} placeholder="hr@company.gr" className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none focus:ring-2 focus:ring-slate-100 transition" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">Τηλέφωνο</label>
+                <label className="text-sm font-semibold text-slate-700">Τηλέφωνο (Προαιρετικό)</label>
                 <input value={formData.contactPhone} onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })} placeholder="2101234567" className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-700 outline-none focus:ring-2 focus:ring-slate-100 transition" />
               </div>
             </div>
