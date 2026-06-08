@@ -102,8 +102,7 @@ export default function ManageJobPage({ params }: { params: Promise<{ token: str
           <h1 className="text-3xl font-bold text-slate-900">Διαχείριση Αγγελίας</h1>
           <div className="flex gap-2">
             <span className="px-4 py-1.5 rounded-full text-sm font-bold bg-indigo-100 text-indigo-700 capitalize">
-              Πλάνο: {job.plan === "free" ? "Δωρεάν" : 
-                     job.plan === "urgent" ? "Επείγουσα" : "Προβεβλημένη"}
+              Πλάνο: {job.plan === "free" ? "Δωρεάν" : "Προβεβλημένη"}
             </span>
             <span className={`px-4 py-1.5 rounded-full text-sm font-bold ${
               isClosed ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
@@ -116,14 +115,26 @@ export default function ManageJobPage({ params }: { params: Promise<{ token: str
         <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm mb-6">
           {isEditing ? (
             <div className="space-y-5 text-slate-900">
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">Τίτλος Αγγελίας</label>
-                <input 
-                  type="text" 
-                  value={editData.title} 
-                  onChange={(e) => setEditData({...editData, title: e.target.value})}
-                  className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-slate-900 bg-white"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-1.5">Τίτλος Αγγελίας</label>
+                  <input 
+                    type="text" 
+                    value={editData.title} 
+                    onChange={(e) => setEditData({...editData, title: e.target.value})}
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-slate-900 bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-1.5">Μισθός</label>
+                  <input 
+                    type="text" 
+                    value={editData.salary || ""} 
+                    onChange={(e) => setEditData({...editData, salary: e.target.value})}
+                    placeholder="π.χ. 1200€ - 1500€"
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-slate-900 bg-white"
+                  />
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

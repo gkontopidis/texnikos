@@ -23,6 +23,25 @@ export const sendApplicationNotificationEmail = async (employerEmail: string, ap
   }
 };
 
+export const sendAdminNotificationEmail = async (jobTitle: string, company: string, location: string) => {
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: "gkontopidis@yahoo.com",
+      subject: `Νέα Αγγελία: ${jobTitle} (${company})`,
+      html: `
+        <h1>Νέα αγγελία περιμένει έγκριση</h1>
+        <p><strong>Τίτλος:</strong> ${jobTitle}</p>
+        <p><strong>Εταιρεία:</strong> ${company}</p>
+        <p><strong>Τοποθεσία:</strong> ${location}</p>
+        <p>Συνδεθείτε στο admin panel για να την εγκρίνετε.</p>
+      `,
+    });
+  } catch (error) {
+    console.error("Resend Error (sendAdminNotificationEmail):", error);
+  }
+};
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export const sendVerificationEmail = async (email: string, manageToken: string, jobTitle: string) => {

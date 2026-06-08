@@ -3,7 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
 import Company from "@/models/Company";
 import AlertSubscription from "@/models/AlertSubscription";
-import { sendJobPostedEmail, sendVerificationEmail } from "@/lib/mail/emailService";
+import { sendJobPostedEmail, sendVerificationEmail, sendAdminNotificationEmail } from "@/lib/mail/emailService";
 import { sendJobAlertEmail } from "@/lib/mail/alertService";
 import { generateSlug } from "@/lib/slug";
 
@@ -158,6 +158,8 @@ export default async function handler(
     // ... (rest of handlers)
     (async () => {
       try {
+        await sendAdminNotificationEmail(title, companyName, location);
+
         if (isVerified) {
           await sendJobPostedEmail(contactEmail, newJob.manageToken, title);
         } else {

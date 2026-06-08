@@ -27,7 +27,7 @@ export default function EmployersPackages() {
             <p className="text-slate-500 mb-8 text-sm">Ιδανικό για μικρές εργασίες χωρίς βιασύνη.</p>
             <ul className="space-y-4 mb-10 text-slate-700 font-medium">
               <li className="flex items-center gap-2">✅ Δημοσίευση για 30 ημέρες</li>
-              <li className="flex items-center gap-2">✅ Έγκριση σε 72 ώρες</li>
+              <li className="flex items-center gap-2">✅ Έγκριση εντός 72 ωρών</li>
               <li className="flex items-center gap-2 text-slate-300">❌ Προτεραιότητα στη λίστα</li>
             </ul>
             <Link href="/?showPostJob=true&plan=free" className="block w-full py-4 text-center rounded-2xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition">Επιλογή</Link>

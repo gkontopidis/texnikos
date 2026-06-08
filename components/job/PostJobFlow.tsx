@@ -15,7 +15,7 @@ type Step = "plan" | "form" | "payment" | "success";
 export default function PostJobFlow({ onClose, onJobCreated, showToast, specialtyOptions, locationOptions, initialPlan }: PostJobFlowProps) {
   const [step, setStep] = useState<Step>(initialPlan ? "form" : "plan");
   const [loading, setLoading] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<"free" | "featured" | "urgent">(initialPlan || "free");
+  const [selectedPlan, setSelectedPlan] = useState<"free" | "featured">(initialPlan === "urgent" ? "featured" : (initialPlan || "free"));
   const [formData, setFormData] = useState({
     title: "", company: "", location: "", salary: "",
     duration: { type: "permanent", amount: 0, unit: "months" }, 
@@ -172,7 +172,7 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
             <button onClick={() => handlePlanSelect("free")} className="w-full flex items-center justify-between rounded-[24px] border-2 border-slate-100 p-5 text-left transition hover:border-slate-300 hover:bg-slate-50">
               <div>
                 <div className="font-bold text-slate-900">Δωρεάν Αγγελία</div>
-                <div className="text-sm text-slate-500">Δημοσίευση μετά από 72 ώρες moderation.</div>
+                <div className="text-sm text-slate-500">Έγκριση εντός 72 ωρών.</div>
               </div>
               <div className="text-xl font-bold">€0</div>
             </button>
@@ -333,7 +333,7 @@ export default function PostJobFlow({ onClose, onJobCreated, showToast, specialt
             <div>
               <h4 className="text-2xl font-bold text-slate-900 mb-2">Ευχαριστούμε!</h4>
               <p className="text-slate-600">
-                {selectedPlan === "free" ? "Η αγγελία σας βρίσκεται υπό έλεγχο και θα δημοσιευτεί σε περίπου 72 ώρες." : "Η αγγελία σας εγκρίθηκε αυτόματα και είναι πλέον live!"}
+                {selectedPlan === "free" ? "Η αγγελία σας βρίσκεται υπό έλεγχο και θα εγκριθεί εντός 72 ωρών." : "Η αγγελία σας εγκρίθηκε αυτόματα και είναι πλέον live!"}
               </p>
             </div>
             <button onClick={onClose} className="w-full rounded-2xl bg-slate-900 py-4 font-bold text-white hover:bg-slate-800 transition">Επιστροφή</button>

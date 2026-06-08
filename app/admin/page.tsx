@@ -177,6 +177,15 @@ export default function AdminPage() {
                 />
               </div>
               <div>
+                <label className="block text-sm font-bold mb-2">Μισθός</label>
+                <input 
+                  className="w-full px-4 py-2.5 border rounded-xl bg-slate-50 focus:bg-white transition"
+                  value={editingJob.salary || ""} 
+                  onChange={(e) => setEditingJob({...editingJob, salary: e.target.value})} 
+                  placeholder="π.χ. 1200€ - 1500€"
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-bold mb-2">Εταιρεία</label>
                 <input 
                   className="w-full px-4 py-2.5 border rounded-xl bg-slate-50 focus:bg-white transition"
@@ -290,10 +299,10 @@ export default function AdminPage() {
                 <select 
                 className="w-full px-4 py-2.5 border rounded-xl bg-slate-50 focus:bg-white transition font-bold"
                 value={editingJob.plan} 
-                onChange={(e) => setEditingJob({...editingJob, plan: e.target.value as "free" | "urgent" | "featured"})}
+                onChange={(e) => setEditingJob({...editingJob, plan: e.target.value as "free" | "featured"})}
                 >
-                <option value="free">Δωρεάν</option>                  <option value="urgent">Επείγουσα</option>
-                  <option value="featured">Προβεβλημένη</option>
+                <option value="free">Δωρεάν</option>
+                <option value="featured">Προβεβλημένη</option>
                 </select>
               </div>
               <div>
@@ -358,8 +367,7 @@ export default function AdminPage() {
                              job.status === 'closed' ? 'Κλειστή' : 'Έληξε'}
                           </span>
                           <span className="text-[10px] font-black px-2 py-0.5 rounded-full uppercase bg-indigo-100 text-indigo-700">
-                            {job.plan === 'free' ? 'Δωρεάν' : 
-                             job.plan === 'urgent' ? 'Επείγουσα' : 'Προβεβλημένη'}
+                            {job.plan === 'free' ? 'Δωρεάν' : 'Προβεβλημένη'}
                           </span>
                         </div>
                       </div>
