@@ -3,7 +3,7 @@
 import { useState, use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { specialtyOptions, locationOptions } from "@/components/HomePage";
+import { specialtyOptions, locationOptions } from "@/lib/constants";
 
 export default function WorkerManagePage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = use(params);
