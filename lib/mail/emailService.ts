@@ -42,6 +42,70 @@ export const sendAdminNotificationEmail = async (jobTitle: string, company: stri
   }
 };
 
+export const sendWorkerRegistrationAdminNotification = async (firstName: string, lastName: string, specialty: string, location: string) => {
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: "gkontopidis@yahoo.com",
+      subject: `Νέος Τεχνικός: ${firstName} ${lastName} (${specialty})`,
+      html: `
+        <h1>Νέα εγγραφή τεχνικού</h1>
+        <p><strong>Όνομα:</strong> ${firstName} ${lastName}</p>
+        <p><strong>Ειδικότητα:</strong> ${specialty}</p>
+        <p><strong>Τοποθεσία:</strong> ${location}</p>
+        <p>Συνδεθείτε στο admin panel για να εγκρίνετε το προφίλ.</p>
+      `,
+    });
+  } catch (error) {
+    console.error("Resend Error (sendWorkerRegistrationAdminNotification):", error);
+  }
+};
+
+export const sendWorkerManagementEmail = async (email: string, manageToken: string, firstName: string) => {
+  const manageUrl = `${BASE_URL}/workers/manage/${manageToken}`;
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: `Διαχείριση Προφίλ Τεχνικού: ${firstName}`,
+      html: `
+        <h1>Το προφίλ σας καταχωρήθηκε!</h1>
+        <p>Γεια σας ${firstName},</p>
+        <p>Το προφίλ σας στο TexnikesDouleies.gr έχει καταχωρηθεί και περιμένει έγκριση.</p>
+        <p>Μπορείτε να διαχειριστείτε το προφίλ σας (επεξεργασία, διαγραφή, αλλαγή διαθεσιμότητας) από τον παρακάτω σύνδεσμο:</p>
+        <div style="margin: 20px 0;">
+          <a href="${manageUrl}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Διαχείριση Προφίλ</a>
+        </div>
+        <p>Φυλάξτε αυτό το email καθώς είναι ο μοναδικός τρόπος πρόσβασης στο προφίλ σας χωρίς κωδικό.</p>
+      `,
+    });
+  } catch (error) {
+    console.error("Resend Error (sendWorkerManagementEmail):", error);
+  }
+};
+
+export const sendWorkerApprovedEmail = async (email: string, firstName: string) => {
+  const workersUrl = `${BASE_URL}/workers`;
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: `Εγκρίθηκε: Το προφίλ σας είναι πλέον live!`,
+      html: `
+        <h1>Συγχαρητήρια ${firstName}!</h1>
+        <p>Το προφίλ σας στο TexnikesDouleies.gr εγκρίθηκε και είναι πλέον ορατό στους εργοδότες.</p>
+        <p>Μπορείτε να δείτε την καταχώρησή σας στη λίστα των τεχνικών:</p>
+        <div style="margin: 20px 0;">
+          <a href="${workersUrl}" style="background-color: #059669; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Δείτε τη Λίστα Τεχνικών</a>
+        </div>
+        <p>Καλή επιτυχία στις νέες σας συνεργασίες!</p>
+      `,
+    });
+  } catch (error) {
+    console.error("Resend Error (sendWorkerApprovedEmail):", error);
+  }
+};
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export const sendVerificationEmail = async (email: string, manageToken: string, jobTitle: string) => {

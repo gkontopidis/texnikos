@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Job } from "@/types/job";
 
 export default function AdminPage() {
@@ -130,6 +131,12 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-6xl mx-auto">
+        <div className="flex gap-4 mb-8">
+          <Link href="/admin" className="px-6 py-2 bg-indigo-600 text-white rounded-xl font-bold">Αγγελίες</Link>
+          <Link href="/admin/workers" className="px-6 py-2 bg-white text-indigo-600 border border-indigo-200 rounded-xl font-bold hover:bg-indigo-50 transition">Τεχνικοί</Link>
+          <Link href="/" className="ml-auto px-6 py-2 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition">Πίσω στο Site</Link>
+        </div>
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <h1 className="text-3xl font-bold text-indigo-950">Πίνακας Ελέγχου Διαχειριστή</h1>
           

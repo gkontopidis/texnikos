@@ -22,34 +22,45 @@ export default function GdprPage() {
             <section>
               <h2 className="text-xl font-bold text-slate-900">2. Δεδομένα που συλλέγουμε</h2>
               <ul className="list-disc pl-6 space-y-2">
-                <li><strong>Στοιχεία επικοινωνίας:</strong> Email, τηλέφωνο.</li>
-                <li><strong>Δεδομένα εργασίας:</strong> Στοιχεία αγγελιών και αιτήσεων.</li>
+                <li><strong>Στοιχεία επικοινωνίας:</strong> Email, τηλέφωνο (Εργοδότες, Τεχνικοί, Υποψήφιοι).</li>
+                <li><strong>Προφίλ Τεχνικών:</strong> Ονοματεπώνυμο, ειδικότητα, τοποθεσία, εμπειρία, βιογραφικό.</li>
+                <li><strong>Δεδομένα αγγελιών:</strong> Περιεχόμενο αγγελιών και στοιχεία επιχείρησης.</li>
+                <li><strong>Leads (Ενδιαφέρον):</strong> Στοιχεία εργοδοτών που εκδηλώνουν ενδιαφέρον για επικοινωνία με τεχνικούς.</li>
                 <li><strong>Τεχνικά δεδομένα:</strong> IP address, User Agent (για λόγους ασφαλείας και πρόληψης απάτης).</li>
-                <li><strong>Cookies:</strong> Αποθηκευμένες ρυθμίσεις χρήστη.</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-slate-900">3. Νομική Βάση</h2>
+              <h2 className="text-xl font-bold text-slate-900">3. Σκοπός και Νομική Βάση</h2>
               <p>Η επεξεργασία βασίζεται:</p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Στη συγκατάθεσή σας (consent).</li>
-                <li>Στην εκτέλεση της σύμβασης (contract fulfillment).</li>
-                <li>Στο έννομο συμφέρον της πλατφόρμας (ασφάλεια και αποτροπή spam).</li>
+                <li><strong>Στη συγκατάθεσή σας:</strong> Για τη δημιουργία προφίλ τεχνικού ή την εγγραφή σε ειδοποιήσεις.</li>
+                <li><strong>Στην εκτέλεση της σύμβασης:</strong> Για τη δημοσίευση αγγελιών και τη διασύνδεση εργοδοτών με τεχνικούς.</li>
+                <li><strong>Στο έννομο συμφέρον:</strong> Για την ασφάλεια της πλατφόρμας και την αποτροπή κακόβουλης χρήσης (spam/scams).</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-slate-900">4. Retention Policy</h2>
+              <h2 className="text-xl font-bold text-slate-900">4. Κοινοποίηση Δεδομένων</h2>
+              <p>Τα δεδομένα σας κοινοποιούνται μόνο στο πλαίσιο της λειτουργίας της υπηρεσίας:</p>
               <ul className="list-disc pl-6 space-y-2">
+                <li>Τα στοιχεία των τεχνικών κοινοποιούνται σε εργοδότες που εκδηλώνουν ενδιαφέρον.</li>
+                <li>Τα στοιχεία των εργοδοτών (Leads) κοινοποιούνται στους αντίστοιχους τεχνικούς.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-bold text-slate-900">5. Πολιτική Διατήρησης (Retention)</h2>
+              <ul className="list-disc pl-6 space-y-2">
+                <li><strong>Προφίλ Τεχνικών:</strong> Μέχρι ο χρήστης να ζητήσει τη διαγραφή τους.</li>
                 <li><strong>Αιτήσεις εργασίας:</strong> 12 μήνες.</li>
                 <li><strong>Ανενεργές αγγελίες:</strong> 24 μήνες.</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-slate-900">5. Δικαιώματα Χρηστών</h2>
-              <p>Μπορείτε ανά πάσα στιγμή να ζητήσετε πρόσβαση, διόρθωση, διαγραφή ή εξαγωγή των δεδομένων σας στέλνοντας email στο privacy@texnikesdouleies.gr.</p>
+              <h2 className="text-xl font-bold text-slate-900">6. Δικαιώματα Χρηστών</h2>
+              <p>Έχετε δικαίωμα πρόσβασης, διόρθωσης, διαγραφής (δικαίωμα στη λήθη), περιορισμού της επεξεργασίας και φορητότητας των δεδομένων σας. Για την άσκηση των δικαιωμάτων σας, επικοινωνήστε στο privacy@texnikesdouleies.gr.</p>
             </section>
           </div>
         </div>

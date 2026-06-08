@@ -15,7 +15,7 @@ export default function HowItWorks() {
           <h1 className="text-5xl font-black tracking-tight mb-6 text-slate-900">Πώς λειτουργεί</h1>
           <p className="max-w-2xl mx-auto text-lg text-slate-600 leading-relaxed">
             Η πλατφόρμα μας έχει σχεδιαστεί για να είναι απλή, γρήγορη και αποτελεσματική, 
-            <strong> χωρίς την ανάγκη δημιουργίας λογαριασμού</strong>.
+            <strong> χωρίς την ανάγκη δημιουργίας κωδικών</strong>.
           </p>
         </div>
 
@@ -30,23 +30,23 @@ export default function HowItWorks() {
                 <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-indigo-200">1</div>
                 <div>
                   <h3 className="text-xl font-bold mb-2">Δημοσίευση Αγγελίας</h3>
-                  <p className="text-slate-600">Συμπληρώστε τα στοιχεία της θέσης εργασίας σε λιγότερο από 2 λεπτά. Δεν απαιτείται εγγραφή ή κωδικοί.</p>
+                  <p className="text-slate-600">Συμπληρώστε τα στοιχεία της θέσης εργασίας. Δεν απαιτείται εγγραφή ή κωδικοί.</p>
                 </div>
               </div>
               
               <div className="flex gap-6">
                 <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-indigo-200">2</div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Έλεγχος & Έγκριση</h3>
-                  <p className="text-slate-600">Η ομάδα μας ελέγχει την αγγελία σας για να διασφαλίσει την ποιότητα και την αξιοπιστία της πλατφόρμας.</p>
+                  <h3 className="text-xl font-bold mb-2">Εύρεση Τεχνικών</h3>
+                  <p className="text-slate-600">Περιηγηθείτε στη λίστα των τεχνικών και επικοινωνήστε απευθείας με τους επαγγελματίες που σας ταιριάζουν.</p>
                 </div>
               </div>
 
               <div className="flex gap-6">
                 <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-indigo-200">3</div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Διαχείριση μέσω Email</h3>
-                  <p className="text-slate-600">Θα λάβετε ένα μοναδικό σύνδεσμο στο email σας για να επεξεργαστείτε, να ανανεώσετε ή να διαγράψετε την αγγελία σας.</p>
+                  <h3 className="text-xl font-bold mb-2">Έλεγχος & Διαχείριση</h3>
+                  <p className="text-slate-600">Κάθε αγγελία ελέγχεται από εμάς. Διαχειρίζεστε τα πάντα μέσω ενός μοναδικού συνδέσμου στο email σας.</p>
                 </div>
               </div>
 
@@ -54,37 +54,37 @@ export default function HowItWorks() {
             </div>
           </div>
 
-          {/* Candidates Section */}
+          {/* Technicians Section */}
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2 text-sm text-emerald-700 font-bold">
-              🔧 Για Τεχνικούς & Υποψηφίους
+              🔧 Για Τεχνικούς & Επαγγελματίες
             </div>
             <div className="bg-white rounded-[40px] border border-slate-200 p-10 shadow-sm space-y-8">
               <div className="flex gap-6">
                 <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-emerald-100">1</div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Αναζήτηση χωρίς εγγραφή</h3>
-                  <p className="text-slate-600">Βρείτε δουλειές στην περιοχή και την ειδικότητά σας χωρίς να φτιάξετε προφίλ ή να ανεβάσετε βιογραφικό.</p>
+                  <h3 className="text-xl font-bold mb-2">Δημιουργία Προφίλ</h3>
+                  <p className="text-slate-600">Δημιουργήστε το επαγγελματικό σας προφίλ δωρεάν για να σας βρίσκουν οι εργοδότες απευθείας.</p>
                 </div>
               </div>
               
               <div className="flex gap-6">
                 <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-emerald-100">2</div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Άμεση Επικοινωνία</h3>
-                  <p className="text-slate-600">Δείτε τα στοιχεία επικοινωνίας του εργοδότη (τηλέφωνο ή email) και επικοινωνήστε απευθείας μαζί του.</p>
+                  <h3 className="text-xl font-bold mb-2">Αναζήτηση & Ειδοποιήσεις</h3>
+                  <p className="text-slate-600">Βρείτε αγγελίες στην περιοχή σας ή γραφτείτε στις ειδοποιήσεις για να λαμβάνετε νέες δουλειές στο email σας.</p>
                 </div>
               </div>
 
               <div className="flex gap-6">
                 <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-emerald-100">3</div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Ενημερώσεις Email</h3>
-                  <p className="text-slate-600">Γραφτείτε στις ειδοποιήσεις για να λαμβάνετε email μόλις δημοσιευτεί μια νέα αγγελία στην ειδικότητά σας.</p>
+                  <h3 className="text-xl font-bold mb-2">Πλήρης Έλεγχος</h3>
+                  <p className="text-slate-600">Ενημερώστε τη διαθεσιμότητά σας ή επεξεργαστείτε το προφίλ σας οποιαδήποτε στιγμή μέσω του προσωπικού σας link.</p>
                 </div>
               </div>
 
-              <Link href="/" className="block w-full py-4 text-center rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition">Δείτε τις Αγγελίες</Link>
+              <Link href="/workers" className="block w-full py-4 text-center rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition">Δείτε τη Λίστα Τεχνικών</Link>
             </div>
           </div>
         </div>
