@@ -1,4 +1,4 @@
-import { specialtyOptions, locationOptions } from "../HomePage";
+import { specialtyOptions, locationOptions } from "@/lib/constants";
 
 interface SidebarFiltersProps {
   filters: any;
