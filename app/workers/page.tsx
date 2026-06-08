@@ -1,11 +1,10 @@
 "use client";
-
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useMemo, useState, Suspense, useCallback } from "react";
 import Link from "next/link";
-import { specialtyOptions, locationOptions } from "@/components/HomePage";
-
+import { specialtyOptions, locationOptions } from "@/lib/constants";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import JobModal from "@/components/job/JobModal";
-import PostWorkerFlow from "@/components/job/PostWorkerFlow";
 
 interface Worker {
   _id: string;
@@ -19,7 +18,7 @@ interface Worker {
   createdAt: string;
 }
 
-export default function WorkersListPage() {
+export default function WorkersListPage({ isEmbedded = false }: { isEmbedded?: boolean }) {
   const [workers, setWorkers] = useState<Worker[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ specialty: "", location: "" });
@@ -93,7 +92,7 @@ export default function WorkersListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className={isEmbedded ? "" : "min-h-screen bg-slate-50 text-slate-900"}>
       {/* Unlock Modal */}
       {unlockingWorkerId && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/70 p-4">
@@ -150,38 +149,36 @@ export default function WorkersListPage() {
         </div>
       )}
 
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold tracking-tight">TexnikesDouleies.gr</Link>
-          
-          <div className="flex items-center gap-4">
-            <Link href="/how-it-works" className="hidden md:block text-sm font-semibold text-slate-600 hover:text-indigo-600">Πώς λειτουργεί</Link>
-            <Link href="/workers" className="hidden md:block text-sm font-semibold text-indigo-600">Για Τεχνικούς</Link>
-            <Link href="/employers" className="hidden md:block text-sm font-semibold text-slate-600 hover:text-indigo-600">Για Εργοδότες</Link>
-            <div className="hidden lg:flex items-center gap-3 ml-2">
-               <Link href="/jobs?showPostJob=true" className="rounded-2xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 transition">Καταχώρηση Αγγελίας</Link>
-               <button onClick={() => setShowPostWorkerModal(true)} className="rounded-2xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">Καταχώρηση Τεχνικού</button>
+      {!isEmbedded && (
+        <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <Link href="/" className="text-xl font-bold tracking-tight">TexnikesDouleies.gr</Link>
+            
+            <div className="flex items-center gap-4">
+              <Link href="/how-it-works" className="hidden md:block text-sm font-semibold text-slate-600 hover:text-indigo-600">Πώς λειτουργεί</Link>
+              <Link href="/workers" className="hidden md:block text-sm font-semibold text-indigo-600">Για Τεχνικούς</Link>
+              <Link href="/employers" className="hidden md:block text-sm font-semibold text-slate-600 hover:text-indigo-600">Για Εργοδότες</Link>
+              <button className="md:hidden text-2xl" onClick={() => setIsMenuOpen(!isMenuOpen)}>☰</button>
             </div>
-            <button className="md:hidden text-2xl" onClick={() => setIsMenuOpen(!isMenuOpen)}>☰</button>
           </div>
-        </div>
-        
-        {isMenuOpen && (
-          <nav className="md:hidden bg-white border-t border-slate-100 px-6 py-4 flex flex-col gap-4 text-sm font-semibold text-slate-600">
-            <Link href="/how-it-works" onClick={() => setIsMenuOpen(false)}>Πώς λειτουργεί</Link>
-            <Link href="/workers" onClick={() => setIsMenuOpen(false)}>Για Τεχνικούς</Link>
-            <Link href="/employers" onClick={() => setIsMenuOpen(false)}>Για Εργοδότες</Link>
-            <Link href="/jobs?showPostJob=true" className="text-indigo-600 font-bold">Καταχώρηση Αγγελίας</Link>
-            <button onClick={() => { setShowPostWorkerModal(true); setIsMenuOpen(false); }} className="text-slate-900 text-left font-bold">Καταχώρηση Τεχνικού</button>
-          </nav>
-        )}
-      </header>
+          
+          {isMenuOpen && (
+            <nav className="md:hidden bg-white border-t border-slate-100 px-6 py-4 flex flex-col gap-4 text-sm font-semibold text-slate-600">
+              <Link href="/how-it-works" onClick={() => setIsMenuOpen(false)}>Πώς λειτουργεί</Link>
+              <Link href="/workers" onClick={() => setIsMenuOpen(false)}>Για Τεχνικούς</Link>
+              <Link href="/employers" onClick={() => setIsMenuOpen(false)}>Για Εργοδότες</Link>
+            </nav>
+          )}
+        </header>
+      )}
 
       <main className="max-w-4xl mx-auto px-6 py-12">
-        <div className="mb-10 text-center">
-          <h1 className="text-4xl font-black text-slate-900 mb-4">Εύρεση Τεχνικών</h1>
-          <p className="text-lg text-slate-600">Βρείτε έμπειρους επαγγελματίες για κάθε εργασία.</p>
-        </div>
+        {!isEmbedded && (
+          <div className="mb-10 text-center">
+            <h1 className="text-4xl font-black text-slate-900 mb-4">Εύρεση Τεχνικών</h1>
+            <p className="text-lg text-slate-600">Βρείτε έμπειρους επαγγελματίες για κάθε εργασία.</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10 bg-white p-4 rounded-[32px] border border-slate-200 shadow-sm">
           <select 
@@ -266,15 +263,7 @@ export default function WorkersListPage() {
         )}
       </main>
       
-      <footer className="border-t bg-white py-8 mt-12">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-          <div>© 2026 TexnikesDouleies.gr</div>
-          <div className="flex gap-6">
-            <Link href="/terms" className="hover:text-slate-900 transition">Όροι Χρήσης</Link>
-            <Link href="/gdpr" className="hover:text-slate-900 transition">Προσωπικά Δεδομένα</Link>
-          </div>
-        </div>
-      </footer>
+      {!isEmbedded && <Footer />}
 
       {/* Modals & Notifications */}
       <div className="fixed bottom-4 right-4 z-[110] flex flex-col gap-3">
@@ -284,19 +273,6 @@ export default function WorkersListPage() {
           </div>
         ))}
       </div>
-
-      {showPostWorkerModal && (
-        <PostWorkerFlow 
-          onClose={() => setShowPostWorkerModal(false)} 
-          onWorkerCreated={() => {
-            showToast("Το προφίλ σας καταχωρήθηκε και εκκρεμεί έγκριση.");
-            fetchWorkers();
-          }} 
-          showToast={showToast} 
-          specialtyOptions={specialtyOptions} 
-          locationOptions={locationOptions} 
-        />
-      )}
     </div>
   );
 }

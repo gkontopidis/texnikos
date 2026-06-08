@@ -1,4 +1,11 @@
-import Link from "next/link";
+"use client";
+import { useState } from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import PageContainer from "@/components/PageContainer";
+import PostJobFlow from "@/components/job/PostJobFlow";
+import PostWorkerFlow from "@/components/job/PostWorkerFlow";
+import { specialtyOptions, locationOptions } from "@/lib/constants";
 
 const faqs = [
   {
@@ -10,7 +17,7 @@ const faqs = [
   {
     category: "Για Εργοδότες / Επιχειρήσεις",
     questions: [
-      { q: "Πώς μπορώ να δημοσιεύσω μια αγγελία;", a: "Η διαδικασία είναι απλή: Συμπληρώνετε τη φόρμα, η ομάδα μας ελέγχει την αγγελία για διασφάλιση ποιότητας, και μόλις εγκριθεί, δημοσιεύεται. Λαμβάνετε email με ειδικό σύνδεσμο διαχείρισης για επεξεργασία ή διαγραφή." },
+      { q: "Πώς μπορώ να δημοσιεύσω μια αγγελία;", a: "Η διαδικασία είναι απλή: Συμπληρώστε τη φόρμα, η ομάδα μας ελέγχει την αγγελία για διασφάλιση ποιότητας, και μόλις εγκριθεί, δημοσιεύεται. Λαμβάνετε email με ειδικό σύνδεσμο διαχείρισης για επεξεργασία ή διαγραφή." },
       { q: "Πώς βρίσκω τεχνικούς για μια δουλειά;", a: "Εκτός από τη δημοσίευση αγγελίας, μπορείτε να περιηγηθείτε στη λίστα των Τεχνικών. Μπορείτε να δείτε τα προφίλ τους και να ξεκλειδώσετε τα στοιχεία επικοινωνίας τους δωρεάν." },
       { q: "Πότε εμφανίζεται η αγγελία μου στο site;", a: "Οι αγγελίες δεν δημοσιεύονται αυτόματα. Πραγματοποιούμε βασικό έλεγχο για την αποφυγή ψευδών αγγελιών και τη διατήρηση της ποιότητας της πλατφόρμας." }
     ]
@@ -18,7 +25,7 @@ const faqs = [
   {
     category: "Για Τεχνικούς (Καταχώρηση Προφίλ)",
     questions: [
-      { q: "Πώς μπορώ να εμφανίζομαι στη λίστα των τεχνικών;", a: "Μπορείτε να δημιουργήσετε το προφίλ σας πατώντας 'Καταχώρηση Τεχνικού'. Συμπληρώνετε την ειδικότητά σας, την εμπειρία σας και τα στοιχεία επικοινωνίας σας. Μετά από έγκριση, το προφίλ σας θα είναι ορατό στους εργοδότες." },
+      { q: "Πώς μπορώ να εμφανίζομαι στη λίστα των τεχνικών;", a: "Μπορείτε να δημιουργήσετε το προφίλ σας πατώντας 'Καταχώρηση Τεχνικού'. Συμπληρώστε την ειδικότητά σας, την εμπειρία σας και τα στοιχεία επικοινωνίας σας. Μετά από έγκριση, το προφίλ σας θα είναι ορατό στους εργοδότες." },
       { q: "Ποιοι βλέπουν τα στοιχεία επικοινωνίας μου;", a: "Το τηλέφωνο και το email σας είναι προστατευμένα. Μόνο ενδιαφερόμενοι εργοδότες που συμπληρώνουν τα στοιχεία τους μπορούν να τα δουν. Αυτό αποτρέπει το spam και τις ενοχλητικές κλήσεις." },
       { q: "Πώς διαχειρίζομαι το προφίλ μου;", a: "Μετά την εγγραφή, λαμβάνετε ένα email με έναν προσωπικό σύνδεσμο. Από εκεί μπορείτε να αλλάξετε τη διαθεσιμότητά σας (π.χ. να κρύψετε το προφίλ σας αν δεν είστε διαθέσιμοι) ή να επεξεργαστείτε τα στοιχεία σας." },
       { q: "Είναι δωρεάν η καταχώρηση;", a: "Ναι, η δημιουργία και η εμφάνιση του προφίλ σας στη λίστα των τεχνικών είναι εντελώς δωρεάν." }
@@ -40,12 +47,14 @@ const faqs = [
 ];
 
 export default function FAQPage() {
+  const [showPostJobModal, setShowPostJobModal] = useState(false);
+  const [showPostWorkerModal, setShowPostWorkerModal] = useState(false);
+
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-6">
-      <div className="max-w-3xl mx-auto">
-        <Link href="/" className="text-indigo-600 font-bold mb-6 inline-block hover:underline">← Επιστροφή</Link>
-        <h1 className="text-4xl font-black text-slate-900 mb-12">Συχνές Ερωτήσεις (FAQ)</h1>
-        
+    <div className="min-h-screen bg-slate-50 font-sans">
+      <Header setShowPostJobModal={setShowPostJobModal} setShowPostWorkerModal={setShowPostWorkerModal} />
+
+      <PageContainer title="Συχνές Ερωτήσεις (FAQ)">
         <div className="space-y-12">
           {faqs.map((section, idx) => (
             <div key={idx}>
@@ -61,16 +70,28 @@ export default function FAQPage() {
             </div>
           ))}
         </div>
-      </div>
+      </PageContainer>
 
-      <footer className="mt-20 py-12 text-center text-slate-400 text-sm border-t border-slate-200 flex flex-col items-center gap-4">
-        <div className="flex gap-6">
-          <Link href="/how-it-works" className="hover:text-indigo-600 transition">Πώς λειτουργεί</Link>
-          <Link href="/terms" className="hover:text-indigo-600 transition">Όροι Χρήσης</Link>
-          <Link href="/gdpr" className="hover:text-indigo-600 transition">Πολιτική Απορρήτου</Link>
-        </div>
-        <div>© 2026 TexnikesDouleies.gr · Όλα τα δικαιώματα προστατεύονται.</div>
-      </footer>
+      <Footer />
+
+      {showPostJobModal && (
+        <PostJobFlow 
+          onClose={() => setShowPostJobModal(false)} 
+          onJobCreated={() => {}} 
+          showToast={() => {}} 
+          specialtyOptions={specialtyOptions} 
+          locationOptions={locationOptions} 
+        />
+      )}
+      {showPostWorkerModal && (
+        <PostWorkerFlow 
+          onClose={() => setShowPostWorkerModal(false)} 
+          onWorkerCreated={() => {}} 
+          showToast={() => {}} 
+          specialtyOptions={specialtyOptions} 
+          locationOptions={locationOptions} 
+        />
+      )}
     </div>
   );
 }

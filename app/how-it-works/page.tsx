@@ -1,14 +1,19 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
+import PostJobFlow from "@/components/job/PostJobFlow";
+import PostWorkerFlow from "@/components/job/PostWorkerFlow";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { specialtyOptions, locationOptions } from "@/lib/constants";
 
 export default function HowItWorks() {
+  const [showPostJobModal, setShowPostJobModal] = useState(false);
+  const [showPostWorkerModal, setShowPostWorkerModal] = useState(false);
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
-      <header className="bg-white border-b border-slate-200 py-6">
-        <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold tracking-tight">TexnikesDouleies.gr</Link>
-          <Link href="/" className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition">← Επιστροφή στην Αρχική</Link>
-        </div>
-      </header>
+      <Header setShowPostJobModal={setShowPostJobModal} setShowPostWorkerModal={setShowPostWorkerModal} />
 
       <main className="max-w-6xl mx-auto px-6 py-20">
         <div className="text-center mb-16">
@@ -50,7 +55,7 @@ export default function HowItWorks() {
                 </div>
               </div>
 
-              <Link href="/?showPostJob=true" className="block w-full py-4 text-center rounded-2xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition">Δημοσίευση Αγγελίας</Link>
+              <button onClick={() => setShowPostJobModal(true)} className="block w-full py-4 text-center rounded-2xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition">Δημοσίευση Αγγελίας</button>
             </div>
           </div>
 
@@ -99,9 +104,7 @@ export default function HowItWorks() {
         </div>
       </main>
 
-      <footer className="py-12 text-center text-slate-400 text-sm">
-        © 2026 TexnikesDouleies.gr · Όλα τα δικαιώματα προστατεύονται.
-      </footer>
+      <Footer />
     </div>
   );
 }

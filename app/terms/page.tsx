@@ -1,14 +1,18 @@
-import Link from "next/link";
+"use client";
+import { useState } from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import PostJobFlow from "@/components/job/PostJobFlow";
+import PostWorkerFlow from "@/components/job/PostWorkerFlow";
+import { specialtyOptions, locationOptions } from "@/lib/constants";
 
 export default function TermsPage() {
+  const [showPostJobModal, setShowPostJobModal] = useState(false);
+  const [showPostWorkerModal, setShowPostWorkerModal] = useState(false);
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
-      <header className="bg-white border-b border-slate-200 py-6">
-        <div className="max-w-4xl mx-auto px-6 flex justify-between items-center">
-          <Link href="/" className="font-bold tracking-tight">TexnikesDouleies.gr</Link>
-          <Link href="/" className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition">← Επιστροφή στην Αρχική</Link>
-        </div>
-      </header>
+      <Header setShowPostJobModal={setShowPostJobModal} setShowPostWorkerModal={setShowPostWorkerModal} />
 
       <main className="max-w-4xl mx-auto px-6 py-16">
         <div className="bg-white rounded-[32px] border border-slate-200 p-8 shadow-sm">
@@ -56,6 +60,26 @@ export default function TermsPage() {
           </div>
         </div>
       </main>
+
+      {showPostJobModal && (
+        <PostJobFlow 
+          onClose={() => setShowPostJobModal(false)} 
+          onJobCreated={() => {}} 
+          showToast={() => {}} 
+          specialtyOptions={specialtyOptions} 
+          locationOptions={locationOptions} 
+        />
+      )}
+      {showPostWorkerModal && (
+        <PostWorkerFlow 
+          onClose={() => setShowPostWorkerModal(false)} 
+          onWorkerCreated={() => {}} 
+          showToast={() => {}} 
+          specialtyOptions={specialtyOptions} 
+          locationOptions={locationOptions} 
+        />
+      )}
+      <Footer />
     </div>
   );
 }

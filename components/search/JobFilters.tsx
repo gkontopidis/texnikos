@@ -1,4 +1,4 @@
-import { specialtyOptions } from "../HomePage";
+import { specialtyOptions } from "@/lib/constants";
 
 interface JobFiltersProps {
   filters: any;

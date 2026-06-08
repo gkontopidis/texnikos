@@ -1,35 +1,37 @@
 "use client";
-import { useState, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import PostJobFlow from "./job/PostJobFlow";
 import PostWorkerFlow from "./job/PostWorkerFlow";
-
-export const specialtyOptions = [
-  "Ηλεκτρολόγος εγκαταστάσεων", "Βοηθός Ηλεκτρολόγου", "Υδραυλικός", "Ψυκτικός / Κλιματισμός", "Χτίστης / Μπετατζής", 
-  "Σοβατζής / Επιχριστής", "Τεχνίτης σιδήρου / Κολλητής", "Χειριστής κλαρκ / Περονοφόρου", 
-  "Χειριστής γερανού / Μηχανημάτων", "Κατασκευαστής ξυλουργικών / Ξυλουργός", 
-  "Συντηρητής οικοδομών / Τεχνίτης κτιρίων", "Ελαιοχρωματιστής", "Γυψοσανιδάς / Ψευδοροφές", 
-  "Αλουμινάς / Τεχνίτης Κουφωμάτων", "Τεχνίτης Πλακιδίων / Μαρμάρων", "Μονωτής / Στεγανωτής", 
-  "Τεχνικός Καυστήρων / Φυσικού Αερίου", "Τεχνικός Ανελκυστήρων", "Τεχνικός Ασφαλείας / Συναγερμών", 
-  "Τεχνικός Δικτύων", "Τεχνικός Λευκών Συσκευών", "Μηχανικός Αυτοκινήτων / Οχημάτων", "Φανοποιός", "Βαφέας", "Τεντοποιός", "Κηπουρός / Σχεδιαστής Τοπίου", "Εργάτης", "Οδηγός",
-];
-
-export const locationOptions = [
-  "Ολόκληρη η Ελλάδα", "Αθήνα", "Θεσσαλονίκη", "Πάτρα", "Ηράκλειο", "Λάρισα", 
-  "Βόλος", "Ιωάννινα", "Πειραιάς", "Ρόδος", "Χανιά",
-];
+import Header from "./Header";
+import Footer from "./Footer";
+import { specialtyOptions, locationOptions } from "@/lib/constants";
 
 function HomeContent() {
   const [showPostJobModal, setShowPostJobModal] = useState(false);
   const [showPostWorkerModal, setShowPostWorkerModal] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [stats, setStats] = useState({ active: 0, closed: 0, technicians: 0 });
   const [toasts, setToasts] = useState<{ id: number; message: string; type: "success" | "error" | "info"; visible: boolean }[]>([]);
+
+  useEffect(() => {
+    fetch("/api/jobs")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.stats) setStats(data.stats);
+      })
+      .catch(err => console.error("Stats Fetch Error:", err));
+  }, []);
 
   const showToast = (message: string, type: "success" | "error" | "info" = "success") => {
     const id = Date.now();
     setToasts((current) => [...current, { id, message, type, visible: true }]);
     setTimeout(() => setToasts((current) => current.map((t) => t.id === id ? { ...t, visible: false } : t)), 3000);
     setTimeout(() => setToasts((current) => current.filter((t) => t.id !== id)), 3500);
+  };
+
+  const handleWorkerCreated = () => {
+    fetch("/api/jobs").then(res => res.json()).then(data => data.stats && setStats(data.stats));
+    showToast("Το προφίλ σας καταχωρήθηκε!");
   };
 
   return (
@@ -42,39 +44,14 @@ function HomeContent() {
         ))}
       </div>
 
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold tracking-tight">TexnikesDouleies.gr</Link>
-          
-          <div className="flex items-center gap-4">
-            <Link href="/how-it-works" className="hidden md:block text-sm font-semibold text-slate-600 hover:text-indigo-600">Πώς λειτουργεί</Link>
-            <Link href="/workers" className="hidden md:block text-sm font-semibold text-slate-600 hover:text-indigo-600">Για Τεχνικούς</Link>
-            <Link href="/employers" className="hidden md:block text-sm font-semibold text-slate-600 hover:text-indigo-600">Για Εργοδότες</Link>
-            <div className="hidden lg:flex items-center gap-3 ml-2">
-               <button onClick={() => setShowPostJobModal(true)} className="rounded-2xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 transition">Καταχώρηση Αγγελίας</button>
-               <button onClick={() => setShowPostWorkerModal(true)} className="rounded-2xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">Καταχώρηση Τεχνικού</button>
-            </div>
-            <button className="md:hidden text-2xl" onClick={() => setIsMenuOpen(!isMenuOpen)}>☰</button>
-          </div>
-        </div>
-        
-        {isMenuOpen && (
-          <nav className="md:hidden bg-white border-t border-slate-100 px-6 py-4 flex flex-col gap-4 text-sm font-semibold text-slate-600">
-            <Link href="/how-it-works" onClick={() => setIsMenuOpen(false)}>Πώς λειτουργεί</Link>
-            <Link href="/workers" onClick={() => setIsMenuOpen(false)}>Για Τεχνικούς</Link>
-            <Link href="/employers" onClick={() => setIsMenuOpen(false)}>Για Εργοδότες</Link>
-            <button onClick={() => { setShowPostJobModal(true); setIsMenuOpen(false); }} className="text-indigo-600 text-left font-bold">Καταχώρηση Αγγελίας</button>
-            <button onClick={() => { setShowPostWorkerModal(true); setIsMenuOpen(false); }} className="text-slate-900 text-left font-bold">Καταχώρηση Τεχνικού</button>
-          </nav>
-        )}
-      </header>
+      <Header setShowPostJobModal={setShowPostJobModal} setShowPostWorkerModal={setShowPostWorkerModal} />
 
       <main>
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-slate-50 pt-20 pb-24 md:pt-32 md:pb-40">
            <div className="max-w-6xl mx-auto px-6 relative z-10 text-center">
               <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-8 leading-[1.1] tracking-tight">
-                Η νούμερο 1 πλατφόρμα για <span className="text-indigo-600">τεχνικά επαγγέλματα</span> στην Ελλάδα
+                Πλατφόρμα αποκλειστικά για <span className="text-indigo-600">τεχνικά επαγγέλματα</span> στην Ελλάδα
               </h1>
               <p className="max-w-3xl mx-auto text-xl text-slate-600 mb-12 leading-relaxed">
                 Συνδέουμε εργοδότες και τεχνίτες με αξιοπιστία, ταχύτητα και χωρίς περίπλοκες διαδικασίες εγγραφής.
@@ -93,6 +70,24 @@ function HomeContent() {
            {/* Decorative elements */}
            <div className="absolute top-1/2 left-0 w-64 h-64 bg-indigo-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 -translate-x-1/2"></div>
            <div className="absolute top-1/2 right-0 w-96 h-96 bg-amber-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
+        </section>
+
+        {/* Stats Section */}
+        <section className="bg-white py-12 border-y border-slate-100">
+           <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-white rounded-[32px] border border-slate-100 p-8 shadow-sm flex items-center gap-8 justify-center">
+                  <div className="text-5xl font-black text-indigo-600">{stats.active}</div>
+                  <div className="text-sm font-bold text-slate-500 uppercase tracking-widest leading-tight">Ενεργές<br/>Αγγελίες</div>
+              </div>
+              <div className="bg-white rounded-[32px] border border-slate-100 p-8 shadow-sm flex items-center gap-8 justify-center">
+                  <div className="text-5xl font-black text-emerald-600">{stats.closed}</div>
+                  <div className="text-sm font-bold text-slate-500 uppercase tracking-widest leading-tight">Βρήκαν<br/>Δουλειά</div>
+              </div>
+              <div className="bg-white rounded-[32px] border border-slate-100 p-8 shadow-sm flex items-center gap-8 justify-center">
+                  <div className="text-5xl font-black text-amber-500">{stats.technicians}</div>
+                  <div className="text-sm font-bold text-slate-500 uppercase tracking-widest leading-tight">Εγγεγραμμένοι<br/>Τεχνικοί</div>
+              </div>
+           </div>
         </section>
 
         {/* Dual Path Section */}
@@ -133,55 +128,31 @@ function HomeContent() {
               </div>
            </div>
         </section>
-
-        {/* Info Section */}
-        <section className="bg-slate-50 py-24">
-           <div className="max-w-6xl mx-auto px-6">
-              <div className="text-center mb-16">
-                 <h2 className="text-4xl font-black mb-4">Γιατί να μας επιλέξετε</h2>
-                 <p className="text-lg text-slate-600">Η πιο απλή και αποτελεσματική πλατφόρμα στην Ελλάδα.</p>
-              </div>
-              
-              <div className="grid md:grid-cols-3 gap-12">
-                 <div className="text-center">
-                    <div className="text-4xl mb-4">⚡</div>
-                    <h3 className="text-xl font-bold mb-2">Ταχύτητα</h3>
-                    <p className="text-slate-600">Καταχώρηση αγγελίας ή προφίλ σε λιγότερο από 2 λεπτά. Χωρίς περίπλοκες φόρμες.</p>
-                 </div>
-                 <div className="text-center">
-                    <div className="text-4xl mb-4">🔒</div>
-                    <h3 className="text-xl font-bold mb-2">Αξιοπιστία</h3>
-                    <p className="text-slate-600">Πραγματοποιούμε έλεγχο σε κάθε καταχώρηση για να διασφαλίσουμε την ποιότητα της πλατφόρμας.</p>
-                 </div>
-                 <div className="text-center">
-                    <div className="text-4xl mb-4">💸</div>
-                    <h3 className="text-xl font-bold mb-2">Δωρεάν</h3>
-                    <p className="text-slate-600">Η βασική χρήση της πλατφόρμας είναι και θα παραμείνει δωρεάν για όλους.</p>
-                 </div>
-              </div>
-           </div>
-        </section>
       </main>
 
-      <footer className="border-t bg-white py-12">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8 text-sm text-slate-500 text-center md:text-left">
-          <div className="space-y-4">
-             <div className="text-xl font-bold text-slate-900 tracking-tight">TexnikesDouleies.gr</div>
-             <p>© 2026 · Όλα τα δικαιώματα προστατεύονται.</p>
-          </div>
-          <div className="flex flex-wrap gap-x-8 gap-y-4 justify-center font-bold uppercase tracking-widest text-[10px]">
-            <Link href="/jobs" className="hover:text-indigo-600 transition">Δουλειές</Link>
-            <Link href="/workers" className="hover:text-indigo-600 transition">Τεχνικοί</Link>
-            <Link href="/how-it-works" className="hover:text-indigo-600 transition">Πώς λειτουργεί</Link>
-            <Link href="/terms" className="hover:text-indigo-600 transition">Όροι Χρήσης</Link>
-            <Link href="/gdpr" className="hover:text-indigo-600 transition">Privacy</Link>
-            <Link href="/faq" className="hover:text-indigo-600 transition">FAQ</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
-      {showPostJobModal && <PostJobFlow onClose={() => setShowPostJobModal(false)} onJobCreated={() => showToast("Η αγγελία σας καταχωρήθηκε!")} showToast={showToast} specialtyOptions={specialtyOptions} locationOptions={locationOptions} />}
-      {showPostWorkerModal && <PostWorkerFlow onClose={() => setShowPostWorkerModal(false)} onWorkerCreated={() => showToast("Το προφίλ σας καταχωρήθηκε!")} showToast={showToast} specialtyOptions={specialtyOptions} locationOptions={locationOptions} />}
+      {showPostJobModal && (
+        <PostJobFlow 
+          onClose={() => setShowPostJobModal(false)} 
+          onJobCreated={() => { 
+            fetch("/api/jobs").then(res => res.json()).then(data => data.stats && setStats(data.stats)); 
+            showToast("Η αγγελία σας καταχωρήθηκε!"); 
+          }} 
+          showToast={showToast} 
+          specialtyOptions={specialtyOptions} 
+          locationOptions={locationOptions} 
+        />
+      )}
+      {showPostWorkerModal && (
+        <PostWorkerFlow 
+          onClose={() => setShowPostWorkerModal(false)} 
+          onWorkerCreated={handleWorkerCreated} 
+          showToast={showToast} 
+          specialtyOptions={specialtyOptions} 
+          locationOptions={locationOptions} 
+        />
+      )}
     </div>
   );
 }
